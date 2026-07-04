@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres-db
+
+    environment:
+      POSTGRES_DB: prematricula_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5435:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@prematricula.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+    ports:
+      - "5052:80"
+
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  pgadmin_data:

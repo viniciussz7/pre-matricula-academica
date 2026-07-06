@@ -218,17 +218,21 @@ test: Testes
 
 ## 13.  Branches
 Nada de GitFlow.
-Somente: main
-e branches temporárias.
-- feature/auth
-- feature/student
-- feature/discipline
-- feature/frontend-login
+Somente: **main** e **develop**
 
-Terminou.
-Merge.
-Apaga.
-Acabou.
+A ideia seria:
+
+main: sempre estável e apresentável.
+develop: onde vocês três trabalham no dia a dia.
+
+Assim, todos fazem:
+```bash
+git pull origin develop
+
+git push origin develop
+```
+
+Somente quando uma funcionalidade importante estiver funcionando (por exemplo, "CRUD de Alunos completo"), alguém faz o merge de develop para main.
 
 ---
 

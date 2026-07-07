@@ -1,4 +1,4 @@
-package br.edu.uesb.prematricula.user.service;
+package br.edu.uesb.prematricula.config.security.userdetails;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

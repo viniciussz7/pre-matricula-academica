@@ -1,7 +1,7 @@
 package br.edu.uesb.prematricula.academicperiod.controller;
 
 import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodRequestDTO;
-import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
+import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.service.AcademicPeriodService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +20,22 @@ public class AcademicPeriodController {
     private AcademicPeriodService service;
 
     @PostMapping
-    public ResponseEntity<AcademicPeriod> create(@RequestBody @Valid AcademicPeriodRequestDTO dto) {
+    public ResponseEntity<AcademicPeriodResponseDTO> create(@RequestBody @Valid AcademicPeriodRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AcademicPeriod> update(@PathVariable UUID id, @RequestBody @Valid AcademicPeriodRequestDTO dto) {
+    public ResponseEntity<AcademicPeriodResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid AcademicPeriodRequestDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<AcademicPeriod>> findAll() {
+    public ResponseEntity<List<AcademicPeriodResponseDTO>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AcademicPeriod> findById(@PathVariable UUID id) {
+    public ResponseEntity<AcademicPeriodResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
     }
 

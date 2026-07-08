@@ -2,11 +2,13 @@ package br.edu.uesb.prematricula.academicperiod.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodRequestDTO;
+import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
 import br.edu.uesb.prematricula.academicperiod.repository.AcademicPeriodRepository;
 import jakarta.transaction.Transactional;
@@ -18,41 +20,57 @@ public class AcademicPeriodService {
     private AcademicPeriodRepository repository;
 
     @Transactional
-    public AcademicPeriod create(AcademicPeriodRequestDTO dto) {
-        AcademicPeriod academicPeriod = AcademicPeriod.builder()
+    public AcademicPeriodResponseDTO create(AcademicPeriodRequestDTO dto) {
+        AcademicPeriod entity = AcademicPeriod.builder()
                 .code(dto.code())
                 .name(dto.name())
                 .startDate(dto.startDate())
                 .endDate(dto.endDate())
                 .active(true)
                 .build();
-
-        return repository.save(academicPeriod);
+        return toResponse(repository.save(entity));
     }
 
     @Transactional
-    public AcademicPeriod update(UUID id, AcademicPeriodRequestDTO dto) {
-        AcademicPeriod period = findById(id);
-        period.setCode(dto.code());
-        period.setName(dto.name());
-        period.setStartDate(dto.startDate());
-        period.setEndDate(dto.endDate());
-        return repository.save(period);
+    public AcademicPeriodResponseDTO update(UUID id, AcademicPeriodRequestDTO dto) {
+        AcademicPeriod entity = findEntityById(id);
+        entity.setCode(dto.code());
+        entity.setName(dto.name());
+        entity.setStartDate(dto.startDate());
+        entity.setEndDate(dto.endDate());
+        return toResponse(repository.save(entity));
     }
 
-    public List<AcademicPeriod> findAll() {
-        return repository.findAll();
+    public List<AcademicPeriodResponseDTO> findAll() {
+        return repository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public AcademicPeriod findById(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Período não encontrado com ID: " + id));
+    public AcademicPeriodResponseDTO findById(UUID id) {
+        return toResponse(findEntityById(id));
     }
 
     @Transactional
     public void deactivate(UUID id) {
-        AcademicPeriod period = findById(id);
-        period.setActive(false);
-        repository.save(period);
+        AcademicPeriod entity = findEntityById(id);
+        entity.setActive(false);
+        repository.save(entity);
     }
+
+    private AcademicPeriod findEntityById(UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Período não encontrado com ID: " + id));
+    }
+
+    public AcademicPeriodResponseDTO toResponse(AcademicPeriod entity) {
+        return new AcademicPeriodResponseDTO(
+                entity.getId(),
+                entity.getCode(),
+                entity.getName(),
+                entity.getStartDate(),
+                entity.getEndDate(),
+                entity.getActive());
+    }
+
 }

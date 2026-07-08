@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.uesb.prematricula.academicperiod.exception.ResourceNotFoundException;
 import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodRequestDTO;
 import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
@@ -60,7 +61,7 @@ public class AcademicPeriodService {
 
     private AcademicPeriod findEntityById(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Período não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Período não encontrado com ID: " + id));
     }
 
     public AcademicPeriodResponseDTO toResponse(AcademicPeriod entity) {

@@ -36,8 +36,11 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
+
+    @Column(name = "first_access", nullable = false)
+    private boolean firstAccess;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -88,7 +91,12 @@ public class User implements UserDetails {
 
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.active = true;
+        
+        if (!active) {
+            this.active = true;
+        }
+
+        this.firstAccess = true;
 
     }
 

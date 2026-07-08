@@ -1,6 +1,10 @@
 server:
     port: 8080
 
+app:
+  verification-token:
+    expiration: 15
+
 spring:
   application:
     name: pre-matricula-academica

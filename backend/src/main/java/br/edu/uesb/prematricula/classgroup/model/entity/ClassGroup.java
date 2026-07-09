@@ -1,36 +1,51 @@
-package br.edu.uesb.prematricula.discipline.model.entity;
+package br.edu.uesb.prematricula.classgroup.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
+import br.edu.uesb.prematricula.discipline.model.entity.Discipline;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "disciplines")
+@Table(name = "classes", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_class_code_period", columnNames = {"code", "academic_period_id"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Discipline {
+public class ClassGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code", nullable = false)
     private String code;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "workload", nullable = false)
-    private Integer workload;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discipline_id", nullable = false)
+    private Discipline discipline;
 
-    @Column(name = "prerequisites", columnDefinition = "TEXT")
-    private String prerequisites;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academic_period_id", nullable = false)
+    private AcademicPeriod academicPeriod;
+
+    @Column(name = "vacancies", nullable = false)
+    private Integer vacancies;
+
+    @Column(name = "allow_oversubscription", nullable = false)
+    @Builder.Default
+    private Boolean allowOversubscription = false;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

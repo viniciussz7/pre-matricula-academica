@@ -11,4 +11,6 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     Optional<Student> findByRegistrationNumber(String registrationNumber);
 
+    boolean existsByRegistrationNumber(String registrationNumber);
+
 }

@@ -1,13 +1,11 @@
 package br.edu.uesb.prematricula.user.service;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
 
 import br.edu.uesb.prematricula.user.exception.EmailAlreadyExistsException;
 import br.edu.uesb.prematricula.user.exception.UserNotFoundException;
+import br.edu.uesb.prematricula.user.model.dto.request.CreateUserRequestDTO;
 import br.edu.uesb.prematricula.user.model.entity.User;
-import br.edu.uesb.prematricula.user.model.enums.UserRole;
 import br.edu.uesb.prematricula.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -17,14 +15,14 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User createUser(String fullName, String email, UserRole userRole) {
+    public User createUser(CreateUserRequestDTO dto) {
 
-        validateEmail(email);
+        validateEmail(dto.email());
 
         User user = User.builder()
-                .fullName(fullName)
-                .email(email)
-                .role(userRole)
+                .fullName(dto.fullName())
+                .email(dto.email())
+                .role(dto.role())
                 .build();
 
         return userRepository.save(user);

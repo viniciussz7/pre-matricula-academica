@@ -1,0 +1,53 @@
+<div class="flex h-screen bg-gray-100">
+    <aside class="w-80 bg-[#232066] text-white flex flex-col p-6">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3"></div>
+            <p class="font-bold">Olá, Celina!</p>
+        </div>
+
+        <nav class="flex-grow space-y-2">
+
+            <a routerLink="/dashboard" routerLinkActive="sidebar-active" [routerLinkActiveOptions]="{exact: true}"
+                class="sidebar-item">
+                Painel Principal
+            </a>
+
+            <a routerLink="/students" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Alunos
+            </a>
+
+            <a routerLink="/disciplines" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Disciplinas
+            </a>
+
+            <a routerLink="/academic-period" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Períodos Letivos
+            </a>
+
+            <a routerLink="/class-group" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Turmas
+            </a>
+
+            <a routerLink="/enrollment-process" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Pré-Matrículas
+            </a>
+
+            <a routerLink="/reports" routerLinkActive="sidebar-active" class="sidebar-item">
+                Ver Relatórios
+            </a>
+        </nav>
+
+        <div class="mt-auto">
+            <a routerLink="/login" class="logout-button">Sair</a>
+
+            <div class="mt-6 flex justify-center">
+                <img src="assets/logo-uesb.png" alt="Logo UESB" class="h-16 w-auto">
+            </div>
+        </div>
+
+    </aside>
+
+    <main class="flex-grow overflow-auto">
+        <router-outlet></router-outlet>
+    </main>
+</div>

@@ -1,0 +1,1 @@
+ALTER TABLE classes ADD COLUMN allow_oversubscription BOOLEAN NOT NULL DEFAULT FALSE;

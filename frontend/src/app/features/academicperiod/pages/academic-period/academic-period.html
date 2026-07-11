@@ -22,17 +22,17 @@
       <div class="flex gap-2 flex-wrap">
         <button (click)="openCreateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-          Cadastrar Período Letivo
+          Cadastrar Período
         </button>
         
         <button (click)="openUpdateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedAcademicPeriod">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-          Editar Período Letivo
+          Editar Período
         </button>
         
         <button (click)="inactivateAcademicPeriod()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedAcademicPeriod">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-          Inativar Período Letivo
+          Inativar Período
         </button>
         
         <button (click)="generatePDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">

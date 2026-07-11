@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/class-groups")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ClassGroupController {
 
     @Autowired

@@ -9,5 +9,5 @@ import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
 
 @Repository
 public interface AcademicPeriodRepository extends JpaRepository<AcademicPeriod, UUID> {
-
+    boolean existsByCode(String code);
 }

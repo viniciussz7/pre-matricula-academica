@@ -1,47 +1,22 @@
 import { Routes } from '@angular/router';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 export const routes: Routes = [
-    // Rota padrão redireciona para o login
-    { path: '', redirectTo: 'auth', pathMatch: 'full' },
-
-    {
-        path: 'auth',
-        loadChildren: () => import('./features/auth/auth-module').then(m => m.AuthModule)
-    },
-
-    {
-        path: 'student',
-        loadChildren: () => import('./features/student/student-module').then(m => m.StudentModule)
-    },
-
-    {
-        path: 'discipline',
-        loadChildren: () => import('./features/discipline/discipline-module').then(m => m.DisciplineModule)
-    },
-
-    {
-        path: 'classgroup',
-        loadChildren: () => import('./features/classgroup/classgroup-module').then(m => m.ClassgroupModule)
-    },
-
-    {
-        path: 'academicperiod',
-        loadChildren: () => import('./features/academicperiod/academicperiod-module').then(m => m.AcademicperiodModule)
-    },
-
-    {
-        path: 'enrollmentprocess',
-        loadChildren: () => import('./features/enrollmentprocess/enrollmentprocess-module').then(m => m.EnrollmentprocessModule)
-    },
-
-    {
-        path: 'enrollment',
-        loadChildren: () => import('./features/enrollment/enrollment-module').then(m => m.EnrollmentModule)
-    },
-
-    {
-        path: 'reports',
-        loadChildren: () => import('./features/reports/reports-module').then(m => m.ReportModule)
-    }
-
+  { path: 'login', loadComponent: () => import('./auth/pages/login/login.component').then(m => m.LoginComponent) },
+  
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: 'dashboard', loadComponent: () => import('./features/dashboard/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'students', loadComponent: () => import('./features/student/pages/student/student.component').then(m => m.StudentsComponent) },
+      { path: 'disciplines', loadComponent: () => import('./features/discipline/pages/discipline/discipline.component').then(m => m.DisciplineComponent) },
+      { path: 'academic-period', loadComponent: () => import('./features/academicperiod/pages/academic-period/academic-period.component').then(m => m.AcademicPeriodComponent) },
+      { path: 'class-group', loadComponent: () => import('./features/classgroup/pages/class-group/class-group.component').then(m => m.ClassGroupComponent) },
+      { path: 'enrollment-process', loadComponent: () => import('./features/enrollmentprocess/pages/enrollment-process/enrollment-process.component').then(m => m.EnrollmentProcessComponent) },
+      { path: 'reports', loadComponent: () => import('./features/reports/pages/reports/reports.component').then(m => m.ReportsComponent) },
+      
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  }
 ];

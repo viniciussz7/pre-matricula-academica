@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface ClassGroupRepository extends JpaRepository<ClassGroup, UUID> {
+    boolean existsByCode(String code);
     boolean existsByCodeAndAcademicPeriodId(String code, UUID academicPeriodId);
 }

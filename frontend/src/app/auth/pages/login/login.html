@@ -1,0 +1,34 @@
+<div class="min-h-screen bg-gray-200 flex flex-col">
+  <div class="bg-[#322A6A] p-4 flex items-center shadow-md">
+    <img src="assets/logo-uesb.png" alt="Logo UESB" class="h-12 mr-4">
+    <h1 class="text-white text-xl font-bold tracking-wide">PRÉ-MATRÍCULA ACADÊMICA</h1>
+  </div>
+
+  <div class="flex-grow flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+      
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+        Acessar Conta
+        <div class="w-24 h-1 bg-[#322A6A] mx-auto mt-2 rounded"></div>
+      </h2>
+
+      <form (submit)="onLogin()">
+        <input [(ngModel)]="credentials.email" name="email" class="w-full border p-3 mb-4" placeholder="Email">
+        <input [(ngModel)]="credentials.password" name="password" type="password" class="w-full border p-3 mb-6" placeholder="Senha">
+        
+        <div class="flex justify-between text-sm mb-6">
+          <label><input type="checkbox"> Lembrar de mim</label>
+          <button type="button" (click)="goToForgotPassword()" class="hover:underline">Esqueceu a senha?</button>
+        </div>
+
+        <button type="submit" class="w-full bg-[#232066] text-white p-3 rounded">Entrar</button>
+
+        <div class="text-center mt-4 text-sm">
+          Primeiro acesso? 
+          <button type="button" (click)="goToFirstAccess()" class="text-[#232066] font-bold">Clique aqui</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

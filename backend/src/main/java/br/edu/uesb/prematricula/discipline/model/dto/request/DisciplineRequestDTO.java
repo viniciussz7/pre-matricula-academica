@@ -19,5 +19,7 @@ public record DisciplineRequestDTO(
     @Min(value = 1, message = "A carga horária deve ser maior que zero")
     Integer workload,
 
-    String prerequisites
+    String prerequisites,
+
+    Boolean active
 ) {}

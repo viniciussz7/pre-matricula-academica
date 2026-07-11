@@ -27,5 +27,7 @@ public record ClassGroupRequestDTO(
     Integer vacancies,
 
     @NotNull(message = "O indicador de ultrapassar limite é obrigatório")
-    Boolean allowOversubscription
+    Boolean allowOversubscription,
+
+    Boolean active
 ) {}

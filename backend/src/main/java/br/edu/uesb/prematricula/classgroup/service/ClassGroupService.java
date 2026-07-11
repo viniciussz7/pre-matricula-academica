@@ -76,6 +76,7 @@ public class ClassGroupService {
         entity.setAcademicPeriod(academicPeriod);
         entity.setVacancies(dto.vacancies());
         entity.setAllowOversubscription(dto.allowOversubscription());
+        entity.setActive(dto.active());
 
         return toResponse(repository.save(entity));
     }

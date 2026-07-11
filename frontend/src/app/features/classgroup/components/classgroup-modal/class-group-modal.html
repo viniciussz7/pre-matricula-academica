@@ -1,0 +1,96 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md relative overflow-y-auto max-h-[95vh]">
+    
+    <button (click)="closeModal.emit()" class="absolute top-5 right-5 text-gray-400 hover:text-red-600 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+
+    <h2 class="text-xl font-bold text-[#232066] mb-6 text-center">
+      {{ isEditMode ? 'Editar Turma' : 'Cadastrar Turma' }}
+    </h2>
+    
+    <div *ngIf="errorMessage" class="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-semibold flex items-start gap-2 shadow-sm animate-fade-in">
+      <svg class="w-5 h-5 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+    
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      
+      <div>
+        <label class="block text-sm font-bold text-[#232066] mb-1">Código:</label>
+        <input formControlName="code" placeholder="Ex: T01" 
+               [ngClass]="{'border-red-500': form.get('code')?.invalid && form.get('code')?.touched, 'border-gray-300': !(form.get('code')?.invalid && form.get('code')?.touched)}"
+               class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#232066]">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-bold text-[#232066] mb-1">Nome:</label>
+        <input formControlName="name" placeholder="Ex: Turma A"
+               [ngClass]="{'border-red-500': form.get('name')?.invalid && form.get('name')?.touched, 'border-gray-300': !(form.get('name')?.invalid && form.get('name')?.touched)}"
+               class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#232066]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-[#232066] mb-1">Disciplina:</label>
+        <select formControlName="disciplineId"
+                [ngClass]="{'border-red-500': form.get('disciplineId')?.invalid && form.get('disciplineId')?.touched, 'border-gray-300': !(form.get('disciplineId')?.invalid && form.get('disciplineId')?.touched)}"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#232066] bg-white">
+          <option value="" disabled>Selecione uma disciplina...</option>
+          <option *ngFor="let d of disciplines" [value]="d.id">{{ d.name }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-[#232066] mb-1">Período Letivo:</label>
+        <select formControlName="academicPeriodId"
+                [ngClass]="{'border-red-500': form.get('academicPeriodId')?.invalid && form.get('academicPeriodId')?.touched, 'border-gray-300': !(form.get('academicPeriodId')?.invalid && form.get('academicPeriodId')?.touched)}"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#232066] bg-white">
+          <option value="" disabled>Selecione um período...</option>
+          <option *ngFor="let p of periods" [value]="p.id">{{ p.code }} - {{ p.name }}</option>
+        </select>
+      </div>
+
+        <div>
+          <label class="block text-sm font-bold text-[#232066] mb-1">Vagas:</label>
+          <input type="number" formControlName="vacancies" placeholder="Ex: 40"
+                 [ngClass]="{'border-red-500': form.get('vacancies')?.invalid && form.get('vacancies')?.touched, 'border-gray-300': !(form.get('vacancies')?.invalid && form.get('vacancies')?.touched)}"
+                 class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#232066]">
+        </div>
+        
+      <div class="flex items-center gap-3 mt-2">
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" formControlName="allowOversubscription" class="sr-only peer">
+          <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#232066]"></div>
+        </label>
+        <span class="text-sm font-bold text-[#232066]">
+          {{ form.get('allowOversubscription')?.value ? 'Permitir Ultrapassar Vagas' : 'Não Permitir Ultrapassar Vagas' }}
+        </span>
+      </div>
+
+      <div *ngIf="isEditMode" class="flex items-center gap-3 mt-2">
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" formControlName="active" class="sr-only peer">
+          <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#232066]"></div>
+        </label>
+        <span class="text-sm font-bold text-[#232066]">
+          {{ form.get('active')?.value ? 'Turma Ativa' : 'Turma Inativa' }}
+        </span>
+      </div>
+
+      <div class="flex gap-4 mt-6">
+        <button type="submit" [disabled]="form.invalid || isSubmitting" 
+                class="flex-1 bg-[#232066] hover:bg-[#322A6A] text-white py-2 rounded font-bold disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-colors">
+          
+          <svg *ngIf="isSubmitting" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          
+          {{ isEditMode ? 'Salvar Alterações' : 'Cadastrar' }}
+        </button>
+        
+        <button type="button" (click)="closeModal.emit()" [disabled]="isSubmitting"
+                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded font-bold disabled:opacity-50 transition-colors">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

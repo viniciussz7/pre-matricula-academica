@@ -1,0 +1,88 @@
+<div class="py-8 px-4 w-full max-w-[95%] mx-auto relative">
+  <div class="text-center mb-10">
+    <h1 class="text-2xl font-bold text-[#232066]">
+      Gestão de Disciplinas
+    </h1>
+    <div class="separator-line"></div>
+  </div>
+  
+  <div class="bg-white p-8 rounded-2xl shadow-lg">
+    <div class="flex flex-col md:flex-row items-end justify-between gap-4 mb-6">
+
+      <div class="w-full md:w-1/2 relative">
+        <label class="block text-sm font-bold text-[#232066] mb-1">Buscar Disciplina:</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" class="w-full p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#232066]" placeholder="Digite o nome ou código...">
+        </div>
+      </div>
+      
+      <div class="flex gap-2 flex-wrap">
+        <button (click)="openCreateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Cadastrar Disciplina
+        </button>
+        
+        <button (click)="openUpdateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedDiscipline">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+          Editar Disciplina
+        </button>
+        
+        <button (click)="inactivateDiscipline()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedDiscipline">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+          Inativar Disciplina
+        </button>
+        
+        <button (click)="generatePDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Exportar Tabela
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded border border-gray-200">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-[#232066] text-white">
+            <th class="p-3 text-left w-1/6">Código</th>
+            <th class="p-3 text-left w-2/6">Nome da Disciplina</th>
+            <th class="p-3 text-center w-1/6">CH</th>
+            <th class="p-3 text-center w-1/6">Pré-req.</th>
+            <th class="p-3 text-center w-1/6">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of filteredDisciplines" 
+              (click)="selectDiscipline(d)" 
+              [class.bg-[#232066]]="selectedDiscipline?.id === d.id"
+              [class.text-white]="selectedDiscipline?.id === d.id"
+              [class.bg-gray-100]="!d.active && selectedDiscipline?.id !== d.id"
+              [class.opacity-60]="!d.active && selectedDiscipline?.id !== d.id"
+              class="border-b cursor-pointer hover:bg-[#322A6A] hover:text-white text-[#232066] transition-colors">
+            
+            <td class="p-3 font-semibold">{{d.code}}</td>
+            <td class="p-3">{{d.name}}</td>
+            <td class="p-3 text-center">{{d.workload}}h</td>
+            <td class="p-3 text-center">{{d.prerequisites || '-'}}</td>
+            <td class="p-3 text-center">
+              <span *ngIf="d.active" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold">Ativa</span>
+              <span *ngIf="!d.active" class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold">Inativa</span>
+            </td>
+          </tr>
+          
+          <tr *ngIf="filteredDisciplines.length === 0">
+            <td colspan="5" class="p-6 text-center text-gray-500">Nenhuma disciplina encontrada.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <app-discipline-modal *ngIf="isModalOpen" 
+    [disciplineToEdit]="selectedDiscipline"
+    (closeModal)="isModalOpen = false" 
+    (saveSuccess)="onModalSuccess()">
+  </app-discipline-modal>
+</div>

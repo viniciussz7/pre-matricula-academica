@@ -39,7 +39,6 @@ public class DisciplineService {
     public DisciplineResponseDTO update(UUID id, DisciplineRequestDTO dto) {
         Discipline entity = findEntityById(id);
 
-        // Verifica se o código foi alterado e se o novo código já existe
         if (!entity.getCode().equals(dto.code()) && repository.existsByCode(dto.code())) {
             throw new IllegalArgumentException("Já existe uma disciplina com o código informado.");
         }
@@ -48,6 +47,7 @@ public class DisciplineService {
         entity.setName(dto.name());
         entity.setWorkload(dto.workload());
         entity.setPrerequisites(dto.prerequisites());
+        entity.setActive(dto.active());
 
         return toResponse(repository.save(entity));
     }

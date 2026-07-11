@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/disciplines")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DisciplineController {
 
     @Autowired

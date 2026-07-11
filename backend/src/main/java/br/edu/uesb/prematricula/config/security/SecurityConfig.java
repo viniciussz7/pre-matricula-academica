@@ -36,8 +36,13 @@ public class SecurityConfig {
 
                                 "/auth/login",
                                 "/auth/first-access/request",
-                                "/auth/first-access/confirm")
-                        .permitAll()
+                                "/auth/first-access/confirm"
+                        ).permitAll()
+
+                        .requestMatchers("/admins/**").hasRole("ADMIN")
+
+                        .requestMatchers("/students/**").hasRole("ADMIN")
+                        
                         .anyRequest().authenticated())
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

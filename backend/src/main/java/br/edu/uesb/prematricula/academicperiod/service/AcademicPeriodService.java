@@ -22,6 +22,9 @@ public class AcademicPeriodService {
 
     @Transactional
     public AcademicPeriodResponseDTO create(AcademicPeriodRequestDTO dto) {
+        if (repository.existsByCode(dto.code())) {
+            throw new IllegalArgumentException("Já existe um período letivo com o código informado.");
+        }
         AcademicPeriod entity = AcademicPeriod.builder()
                 .code(dto.code())
                 .name(dto.name())
@@ -35,10 +38,16 @@ public class AcademicPeriodService {
     @Transactional
     public AcademicPeriodResponseDTO update(UUID id, AcademicPeriodRequestDTO dto) {
         AcademicPeriod entity = findEntityById(id);
+
+        if (!entity.getCode().equals(dto.code()) && repository.existsByCode(dto.code())) {
+            throw new IllegalArgumentException("Já existe um período letivo com o código informado.");
+        }
+
         entity.setCode(dto.code());
         entity.setName(dto.name());
         entity.setStartDate(dto.startDate());
         entity.setEndDate(dto.endDate());
+        entity.setActive(dto.active());
         return toResponse(repository.save(entity));
     }
 

@@ -19,5 +19,7 @@ public record AcademicPeriodRequestDTO(
     LocalDate startDate,
 
     @NotNull(message = "A data de fim é obrigatória")
-    LocalDate endDate
+    LocalDate endDate,
+    
+    Boolean active
 ) {}

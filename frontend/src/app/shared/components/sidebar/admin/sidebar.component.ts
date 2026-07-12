@@ -2,12 +2,13 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { NgIconComponent } from '@ng-icons/core';
 
 
 @Component({
   selector: 'app-sidebar', 
   standalone: true, 
-  imports: [CommonModule, RouterModule], 
+  imports: [CommonModule, RouterModule, NgIconComponent], 
   templateUrl: './sidebar.html',
 })
 export class SidebarComponent implements OnInit {

@@ -12,12 +12,15 @@ import br.edu.uesb.prematricula.auth.dto.response.AuthResponseDTO;
 import br.edu.uesb.prematricula.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
     
     private final AuthService authService;

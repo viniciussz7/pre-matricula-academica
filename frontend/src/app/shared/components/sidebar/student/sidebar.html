@@ -1,0 +1,47 @@
+<div class="flex h-screen bg-gray-100">
+    <aside class="w-80 bg-[#232066] text-white flex flex-col p-6">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3 flex items-center justify-center text-4xl">
+                <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            </div>
+            <p class="font-bold">Olá, Estudante!</p>
+        </div>
+
+        <nav class="flex-grow space-y-2">
+
+            <a routerLink="/student/dashboard" routerLinkActive="sidebar-active" class="sidebar-item">
+                Painel Principal
+            </a>
+
+            <a routerLink="/student/enrollment-process" routerLinkActive="sidebar-active" class="sidebar-item">
+                Pré-Matrículas Abertas
+            </a>
+
+            <a routerLink="/student/discipline" routerLinkActive="sidebar-active" class="sidebar-item">
+                Disciplinas Disponíveis
+            </a>
+            
+            <a routerLink="/student/class-group" routerLinkActive="sidebar-active" class="sidebar-item">
+                Turmas Disponíveis
+            </a>
+
+            <a routerLink="/student/enrollment-history" routerLinkActive="sidebar-active" class="sidebar-item">
+                Histórico de Pré-Matrículas
+            </a>
+
+        </nav>
+
+        <div class="mt-auto">
+            <a routerLink="/login" class="logout-button">Sair</a>
+
+            <div class="mt-6 flex justify-center">
+                <img src="assets/logo-uesb.png" alt="Logo UESB" class="h-16 w-auto">
+            </div>
+        </div>
+
+    </aside>
+
+    <main class="flex-grow overflow-auto">
+        <router-outlet></router-outlet>
+    </main>
+</div>

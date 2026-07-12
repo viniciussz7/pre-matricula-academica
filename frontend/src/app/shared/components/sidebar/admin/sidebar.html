@@ -1,0 +1,51 @@
+<div class="flex h-screen bg-gray-100">
+    <aside class="w-80 bg-[#232066] text-white flex flex-col p-6">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3 flex items-center justify-center text-4xl">
+                <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            </div>
+            <p class="font-bold">Olá, Colegiado!</p>
+        </div>
+
+        <nav class="flex-grow space-y-2">
+
+            <a routerLink="/admin/dashboard" routerLinkActive="sidebar-active" class="sidebar-item">
+                Painel Principal
+            </a>
+
+            <a routerLink="/admin/student" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Alunos
+            </a>
+
+            <a routerLink="/admin/discipline" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Disciplinas
+            </a>
+            <a routerLink="/admin/academic-period" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Períodos Letivos
+            </a>
+            <a routerLink="/admin/class-group" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Turmas
+            </a>
+            <a routerLink="/admin/enrollment-process" routerLinkActive="sidebar-active" class="sidebar-item">
+                Gerenciar Pré-Matrículas
+            </a>
+            <a routerLink="/admin/report" routerLinkActive="sidebar-active" class="sidebar-item">
+                Ver Relatórios
+            </a>
+
+        </nav>
+
+        <div class="mt-auto">
+            <a routerLink="/login" class="logout-button">Sair</a>
+
+            <div class="mt-6 flex justify-center">
+                <img src="assets/logo-uesb.png" alt="Logo UESB" class="h-16 w-auto">
+            </div>
+        </div>
+
+    </aside>
+
+    <main class="flex-grow overflow-auto">
+        <router-outlet></router-outlet>
+    </main>
+</div>

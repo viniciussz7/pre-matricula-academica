@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -8,4 +8,18 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule], 
   templateUrl: './sidebar.html',
 })
-export class SidebarComponent {}
+export class SidebarComponent implements OnInit {
+  fullName: string = '';
+  firstName: string = '';
+
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() { this.loadAmdins(); }
+
+  loadAmdins() {
+    this.fullName = localStorage.getItem('fullName') || 'Aluno'; 
+    this.firstName = this.fullName.split(' ')[0];
+  }
+}

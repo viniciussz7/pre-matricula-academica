@@ -6,6 +6,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
   role: 'ADMIN' | 'STUDENT';
+  fullName: string;
 }
 
 export interface FirstAccessRequestDTO {

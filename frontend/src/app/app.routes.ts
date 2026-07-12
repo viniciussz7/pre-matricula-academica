@@ -82,16 +82,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/student/enrollmentprocess/pages/enrollment-process.component').then(m => m.EnrollmentProcessComponent) 
       },
       { 
-        path: 'discipline', 
-        loadComponent: () => import('./features/student/discipline/pages/discipline.component').then(m => m.DisciplineComponent) 
-      },
-      { 
-        path: 'class-group', 
-        loadComponent: () => import('./features/student/classgroup/pages/class-group.component').then(m => m.ClassGroupComponent) 
-      },
-      { 
-        path: 'enrollment-history', 
-        loadComponent: () => import('./features/student/enrollmenthistory/pages/enrollment-history.component').then(m => m.EnrollmentHistoryComponent) 
+        path: 'my-history', 
+        loadComponent: () => import('./features/student/myhistory/pages/my-history.component').then(m => m.MyHistoryComponent) 
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

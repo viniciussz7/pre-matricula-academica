@@ -1,6 +1,5 @@
 package br.edu.uesb.prematricula.discipline.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.edu.uesb.prematricula.discipline.exception.DisciplineNotFoundException;
@@ -8,14 +7,16 @@ import br.edu.uesb.prematricula.discipline.model.dto.request.DisciplineRequestDT
 import br.edu.uesb.prematricula.discipline.model.dto.response.DisciplineResponseDTO;
 import br.edu.uesb.prematricula.discipline.model.entity.Discipline;
 import br.edu.uesb.prematricula.discipline.repository.DisciplineRepository;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DisciplineService {
 
-    @Autowired
     private DisciplineRepository repository;
 
     @Transactional
@@ -81,6 +82,6 @@ public class DisciplineService {
                 entity.getName(),
                 entity.getWorkload(),
                 entity.getPrerequisites(),
-                entity.getActive());
+                entity.isActive());
     }
 }

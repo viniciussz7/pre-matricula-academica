@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "classes", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_class_code_period", columnNames = {"code", "academic_period_id"})
+        @UniqueConstraint(name = "uk_class_code_period", columnNames = { "code", "academic_period_id" })
 })
 @Getter
 @Setter
@@ -56,15 +56,15 @@ public class ClassGroup {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private Boolean active;
+    private boolean active;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        
-        if (this.active == null) {
-            this.active = true;
+
+        if (!active) {
+            active = true;
         }
     }
 

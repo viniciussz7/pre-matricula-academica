@@ -4,7 +4,8 @@ import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodR
 import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.service.AcademicPeriodService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/academic-periods")
 @CrossOrigin(origins = "http://localhost:4200")
+@RequiredArgsConstructor
 public class AcademicPeriodController {
 
-   @Autowired
     private AcademicPeriodService service;
 
     @PostMapping

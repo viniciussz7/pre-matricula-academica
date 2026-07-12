@@ -41,15 +41,15 @@ public class Discipline {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private Boolean active;
+    private boolean active;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        
-        if (this.active == null) {
-            this.active = true;
+
+        if (!active) {
+            active = true;
         }
     }
 

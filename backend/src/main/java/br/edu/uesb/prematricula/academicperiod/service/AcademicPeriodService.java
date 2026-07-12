@@ -4,20 +4,21 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.uesb.prematricula.academicperiod.exception.AcademicPeriodNotFoundException;
 import br.edu.uesb.prematricula.academicperiod.exception.ResourceNotFoundException;
 import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodRequestDTO;
 import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
 import br.edu.uesb.prematricula.academicperiod.repository.AcademicPeriodRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AcademicPeriodService {
 
-    @Autowired
     private AcademicPeriodRepository repository;
 
     @Transactional
@@ -80,7 +81,14 @@ public class AcademicPeriodService {
                 entity.getName(),
                 entity.getStartDate(),
                 entity.getEndDate(),
-                entity.getActive());
+                entity.isActive());
+    }
+
+    public AcademicPeriod getAcademicPeriod(UUID id) {
+
+        return repository.findById(id)
+                .orElseThrow(() -> new AcademicPeriodNotFoundException(
+                        "Academic period not found."));
     }
 
 }

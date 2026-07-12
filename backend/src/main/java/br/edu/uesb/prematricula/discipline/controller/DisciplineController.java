@@ -1,7 +1,8 @@
 package br.edu.uesb.prematricula.discipline.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/disciplines")
 @CrossOrigin(origins = "http://localhost:4200")
+@RequiredArgsConstructor
 public class DisciplineController {
 
-    @Autowired
     private DisciplineService service;
 
     @PostMapping

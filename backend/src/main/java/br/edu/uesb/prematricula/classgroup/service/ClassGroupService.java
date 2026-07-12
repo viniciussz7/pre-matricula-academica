@@ -13,21 +13,18 @@ import br.edu.uesb.prematricula.classgroup.model.entity.ClassGroup;
 import br.edu.uesb.prematricula.classgroup.repository.ClassGroupRepository;
 import br.edu.uesb.prematricula.discipline.model.entity.Discipline;
 import br.edu.uesb.prematricula.discipline.repository.DisciplineRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ClassGroupService {
 
-    @Autowired
     private ClassGroupRepository repository;
-
-    @Autowired
     private DisciplineRepository disciplineRepository;
-
-    @Autowired
     private AcademicPeriodRepository academicPeriodRepository;
 
     @Transactional
@@ -118,6 +115,6 @@ public class ClassGroupService {
                 entity.getAcademicPeriod().getId(),
                 entity.getVacancies(),
                 entity.getAllowOversubscription(),
-                entity.getActive());
+                entity.isActive());
     }
 }

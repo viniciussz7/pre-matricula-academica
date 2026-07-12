@@ -6,13 +6,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.edu.uesb.prematricula.admin.model.dto.response.AdminResponseDTO;
 import br.edu.uesb.prematricula.auth.dto.request.ConfirmFirstAccessRequestDTO;
 import br.edu.uesb.prematricula.auth.dto.request.FirstAccessRequestDTO;
 import br.edu.uesb.prematricula.auth.dto.request.LoginRequestDTO;
 import br.edu.uesb.prematricula.auth.dto.response.AuthResponseDTO;
 import br.edu.uesb.prematricula.auth.exception.InvalidFirstAccessException;
 import br.edu.uesb.prematricula.config.security.jwt.JwtService;
+import br.edu.uesb.prematricula.student.model.dto.response.StudentResponseDTO;
 import br.edu.uesb.prematricula.student.model.entity.Student;
+import br.edu.uesb.prematricula.student.repository.StudentRepository;
 import br.edu.uesb.prematricula.student.service.StudentService;
 import br.edu.uesb.prematricula.user.model.entity.User;
 import br.edu.uesb.prematricula.user.service.UserService;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
 
@@ -35,9 +39,8 @@ public class AuthService {
 
     private final EmailService emailService;
 
-
     public void requestFirstAccess(FirstAccessRequestDTO dto) {
-        
+
         Student student = studentService.findByRegistrationNumber(dto.registrationNumber());
 
         User user = student.getUser();
@@ -53,12 +56,10 @@ public class AuthService {
         VerificationToken verificationToken = verificationTokenService.createFirstAccessToken(user);
 
         emailService.sendFirstAccessToken(
-            user.getEmail(),
-            verificationToken.getToken()
-        );
+                user.getEmail(),
+                verificationToken.getToken());
 
     }
-
 
     public void confirmFirstAccess(ConfirmFirstAccessRequestDTO dto) {
 
@@ -79,21 +80,38 @@ public class AuthService {
         verificationTokenService.markAsUsed(verificationToken);
     }
 
-
     public AuthResponseDTO login(LoginRequestDTO dto) {
-        
+
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                dto.email(),
-                dto.password()
-            )
-        );
+                new UsernamePasswordAuthenticationToken(
+                        dto.email(),
+                        dto.password()));
 
         User user = (User) authentication.getPrincipal();
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponseDTO(token, user.getRole().toString(), user.getFullName().toString());
+        Object userDTO;
+        if (user.getRole().name().equals("ADMIN")) {
+            userDTO = new AdminResponseDTO(
+                    user.getId(),
+                    user.getId(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    user.isActive());
+        } else {
+            Student student = studentRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("Dados do estudante não encontrados"));
+
+            userDTO = new StudentResponseDTO(
+                    student.getId(),
+                    user.getId(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    student.getRegistrationNumber(),
+                    student.isActive());
+        }
+        return new AuthResponseDTO(token, user.getRole().toString(), userDTO);
     }
 
 }

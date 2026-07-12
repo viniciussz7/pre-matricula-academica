@@ -6,7 +6,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
   role: 'ADMIN' | 'STUDENT';
-  fullName: string;
+  user: AdminResponseDTO | StudentResponseDTO;
 }
 
 export interface FirstAccessRequestDTO {
@@ -19,3 +19,20 @@ export interface FirstAccessDTO {
   password: string;
   confirmPassword: string;
 }
+
+export interface AdminResponseDTO {
+  id: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  active: boolean;
+ }
+
+ export interface StudentResponseDTO {
+  id: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  registrationNumber: string;
+  active: boolean;
+ }

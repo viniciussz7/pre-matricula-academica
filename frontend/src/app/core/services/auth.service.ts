@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { FirstAccessDTO, FirstAccessRequestDTO, LoginRequest, LoginResponse } from '../models/auth.model';
+import { FirstAccessDTO, FirstAccessRequestDTO, LoginRequest, LoginResponse, AdminResponseDTO, StudentResponseDTO } from '../models/auth.model';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Substitua pela URL real da sua API
   private apiUrl = 'http://localhost:8080/auth';
   currentUser: any = null;
 
@@ -19,7 +18,9 @@ export class AuthService {
       tap((response) => {
         localStorage.setItem('token', response.token);
         localStorage.setItem('role', response.role);
-        localStorage.setItem('fullName', response.fullName);
+        if (response.user) {
+          localStorage.setItem('userData', JSON.stringify(response.user));
+        }
       })
     );
   }
@@ -27,6 +28,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('userData');
   }
 
   isLoggedIn(): boolean {
@@ -37,6 +39,11 @@ export class AuthService {
     return localStorage.getItem('role');
   }
 
+  getUserData(): AdminResponseDTO | StudentResponseDTO | null {
+    const userData = localStorage.getItem('userData');
+    return userData ? JSON.parse(userData) : null;
+  }
+  
   requestFirstAccess(dto: FirstAccessRequestDTO): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.apiUrl}/first-access/request`, dto);
   }

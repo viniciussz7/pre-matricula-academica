@@ -1,6 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+
 
 @Component({
   selector: 'app-sidebar', 
@@ -9,17 +11,26 @@ import { RouterModule } from '@angular/router';
   templateUrl: './sidebar.html',
 })
 export class SidebarComponent implements OnInit {
-  fullName: string = '';
   firstName: string = '';
 
   constructor(
-    private cdr: ChangeDetectorRef
+    private authService: AuthService, 
+    private router: Router
   ) {}
 
-  ngOnInit() { this.loadAmdins(); }
+  ngOnInit() {
+    const user = this.authService.getUserData();
+    
+    if (user && user.fullName) {
+      this.firstName = user.fullName.split(' ')[0]; 
+    } else {
+      this.firstName = 'Usuário';
+    }
+  }
 
-  loadAmdins() {
-    this.fullName = localStorage.getItem('fullName') || 'Aluno'; 
-    this.firstName = this.fullName.split(' ')[0];
+  logout(): void {
+    this.authService.logout();
+    
+    this.router.navigate(['/auth/login']); 
   }
 }

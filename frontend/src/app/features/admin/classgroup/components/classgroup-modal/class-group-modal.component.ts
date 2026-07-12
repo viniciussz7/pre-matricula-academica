@@ -54,7 +54,7 @@ export class ClassGroupModalComponent implements OnInit, OnChanges {
   loadDisciplines() {
     this.disciplineService.getAll().subscribe({
       next: (data) => {
-        this.disciplines = data;
+        this.disciplines = data.filter(discipline => discipline.active === true);
       },
       error: (err) => {
         console.error('Erro ao buscar disciplinas', err);
@@ -65,7 +65,7 @@ export class ClassGroupModalComponent implements OnInit, OnChanges {
   loadPeriods() {
     this.periodService.getAll().subscribe({
       next: (data) => {
-        this.periods = data;
+        this.periods = data.filter( period => period.active === true);
       },
       error: (err) => {
         console.error('Erro ao buscar períodos', err);

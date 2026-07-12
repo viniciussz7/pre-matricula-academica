@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DisciplineService } from '../../services/discipline.service';
@@ -21,7 +21,9 @@ export class DisciplineComponent implements OnInit {
   selectedDiscipline: Discipline | null = null;
   isModalOpen = false;
 
-  constructor(private service: DisciplineService) {}
+  constructor(private service: DisciplineService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() { this.loadDisciplines(); }
 
@@ -36,6 +38,8 @@ export class DisciplineComponent implements OnInit {
 
       this.selectedDiscipline = null;
       this.onSearch();
+
+      this.cdr.detectChanges();
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClassGroupService } from '../../services/class-group.service';
@@ -29,17 +29,19 @@ export class ClassGroupComponent implements OnInit {
   constructor(
     private service: ClassGroupService,
     private disciplineService: DisciplineService,
-    private periodService: AcademicPeriodService
-  ) {}
+    private periodService: AcademicPeriodService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.loadAuxiliaryData();
-    this.loadClassGroups(); 
+    this.loadClassGroups();
   }
 
   loadAuxiliaryData() {
     this.disciplineService.getAll().subscribe(data => this.disciplines = data);
     this.periodService.getAll().subscribe(data => this.periods = data);
+    this.cdr.detectChanges();
   }
 
   // Função para buscar o texto da disciplina pelo ID
@@ -62,16 +64,18 @@ export class ClassGroupComponent implements OnInit {
         }
         return a.active ? -1 : 1;
       });
-      
+
       this.selectedClassGroup = null;
       this.onSearch();
+      this.cdr.detectChanges();
+
     });
   }
 
   onSearch() {
     const term = this.searchTerm.toLowerCase();
-    this.filteredClassGroups = this.classGroups.filter(p => 
-      p.name.toLowerCase().includes(term) || 
+    this.filteredClassGroups = this.classGroups.filter(p =>
+      p.name.toLowerCase().includes(term) ||
       p.code.toLowerCase().includes(term)
     );
   }
@@ -100,8 +104,8 @@ export class ClassGroupComponent implements OnInit {
   }
 
   generatePDF() {
-    const doc = new jsPDF('l', 'mm', 'a4'); 
-    
+    const doc = new jsPDF('l', 'mm', 'a4');
+
     doc.setFontSize(16);
     doc.text('Relatório de Turmas', 14, 15);
 

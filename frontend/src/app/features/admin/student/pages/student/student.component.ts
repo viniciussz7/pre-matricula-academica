@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentService } from '../../services/student.service';
@@ -21,7 +21,10 @@ export class StudentsComponent implements OnInit {
   selectedStudent: Student | null = null;
   isModalOpen = false;
 
-  constructor(private service: StudentService) {}
+  constructor(
+    private service: StudentService, 
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() { this.loadStudents(); }
 
@@ -36,6 +39,8 @@ export class StudentsComponent implements OnInit {
 
       this.selectedStudent = null;
       this.onSearch();
+
+      this.cdr.detectChanges();
     });
   }
 

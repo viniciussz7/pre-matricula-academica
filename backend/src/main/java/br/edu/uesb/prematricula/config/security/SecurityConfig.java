@@ -43,7 +43,8 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/auth/login",
                         "/auth/first-access/request",
-                        "/auth/first-access/confirm"
+                        "/auth/first-access/confirm",
+                        "/error"
                 ).permitAll()
                 .requestMatchers("/admins/**").hasRole("ADMIN")
                 .requestMatchers("/students/**").hasRole("ADMIN")

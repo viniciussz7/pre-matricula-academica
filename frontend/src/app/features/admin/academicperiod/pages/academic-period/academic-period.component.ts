@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AcademicPeriodService } from '../../services/academic-period.service';
@@ -21,7 +21,7 @@ export class AcademicPeriodComponent implements OnInit {
   selectedAcademicPeriod: AcademicPeriod | null = null;
   isModalOpen = false;
 
-  constructor(private service: AcademicPeriodService) {}
+  constructor(private service: AcademicPeriodService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() { this.loadPeriods(); }
 
@@ -36,6 +36,8 @@ export class AcademicPeriodComponent implements OnInit {
 
       this.selectedAcademicPeriod = null;
       this.onSearch();
+
+      this.cdr.detectChanges();
     });
   }
 

@@ -2,11 +2,9 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-auth-layout',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.html'
+  templateUrl: './auth-layout.html'
 })
-export class AppComponent {
-  title = 'sistema-academico';
-}
+export class AuthLayoutComponent {}

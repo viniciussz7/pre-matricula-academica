@@ -1,0 +1,81 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-[#232066]">Painel de Gestão Acadêmica</h1>
+    <div class="separator-line"></div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+    <div *ngFor="let stat of stats" 
+         class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4 transition-transform hover:scale-[1.02] duration-300">
+      
+      <div class="p-4 rounded-xl {{stat.color}} text-white flex items-center justify-center">
+        <ng-icon [name]="stat.icon" class="text-2xl"></ng-icon>
+      </div>
+      
+      <div>
+        <p class="text-sm text-gray-400 font-medium">{{ stat.title }}</p>
+        <h3 class="text-2x1 font-bold text-gray-800">{{ stat.value }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+  
+  <a routerLink="/admin/student" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroUserGroup" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Alunos</span>
+  </a>
+
+  <a routerLink="/admin/discipline" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroBookOpen" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Disciplinas</span>
+  </a>
+
+  <a routerLink="/admin/academic-period" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroCalendarDays" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Períodos</span>
+  </a>
+
+  <a routerLink="/admin/class-group" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroAcademicCap" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Turmas</span>
+  </a>
+
+  <a routerLink="/admin/enrollment-process" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroClipboardDocumentCheck" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Pré-Matrícula</span>
+  </a>
+
+  <a routerLink="/admin/report" class="flex flex-col items-center justify-center p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-[#232066]/20 group">
+    <ng-icon name="heroChartBar" class="text-3xl mb-3 text-[#232066] group-hover:scale-110 transition-transform"></ng-icon>
+    <span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Relatórios</span>
+  </a>
+
+</div>
+
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+      <h2 class="font-bold text-gray-800 text-lg">Pré-Matrículas Recentes</h2>
+      <button routerLink="/admin/enrollment-process" class="text-sm text-[#232066] font-semibold hover:underline">Ver todas</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+          <tr>
+            <th class="px-6 py-4">Estudante</th>
+            <th class="px-6 py-4">Ação</th>
+            <th class="px-6 py-4 text-right">Data/Hora</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          <tr *ngFor="let item of recentActivities" class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 font-medium text-gray-700">{{ item.student }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ item.action }}</td>
+            <td class="px-6 py-4 text-gray-400 text-sm text-right">{{ item.date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

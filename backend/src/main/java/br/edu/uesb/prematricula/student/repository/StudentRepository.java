@@ -1,5 +1,6 @@
 package br.edu.uesb.prematricula.student.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,5 +17,7 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     boolean existsByRegistrationNumber(String registrationNumber);
 
     Optional<Student> findByUser(User user);
+
+    List<Student> findByActiveTrueAndUserActiveTrueOrderByUserFullNameAsc();
 
 }

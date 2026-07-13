@@ -35,4 +35,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
     List<Enrollment> findByStudentOrderByEnrollmentProcessAcademicPeriodCodeDesc(
             Student student);
 
+
 }

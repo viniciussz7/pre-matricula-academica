@@ -30,4 +30,8 @@ public interface EnrollmentItemRepository
     long countByEnrollmentProcessClassAndEnrollmentActiveTrue(
             EnrollmentProcessClass enrollmentProcessClass
     );
+
+    List<EnrollmentItem>
+        findByEnrollmentProcessClassAndEnrollmentActiveTrue(
+                EnrollmentProcessClass enrollmentProcessClass);
 }

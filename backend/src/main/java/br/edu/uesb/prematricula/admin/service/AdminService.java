@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.uesb.prematricula.admin.exception.AdminNotFoundException;
 import br.edu.uesb.prematricula.admin.model.dto.request.CreateAdminRequestDTO;
@@ -14,7 +15,6 @@ import br.edu.uesb.prematricula.user.model.dto.request.CreateUserRequestDTO;
 import br.edu.uesb.prematricula.user.model.entity.User;
 import br.edu.uesb.prematricula.user.model.enums.UserRole;
 import br.edu.uesb.prematricula.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service

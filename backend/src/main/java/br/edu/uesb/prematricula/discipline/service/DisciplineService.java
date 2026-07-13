@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DisciplineService {
 
-    private DisciplineRepository repository;
+    private final DisciplineRepository repository;
 
     @Transactional
     public DisciplineResponseDTO create(DisciplineRequestDTO dto) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.uesb.prematricula.student.exception.RegistrationNumberAlreadyExistsException;
 import br.edu.uesb.prematricula.student.exception.StudentNotFoundException;
@@ -15,7 +16,6 @@ import br.edu.uesb.prematricula.user.model.dto.request.CreateUserRequestDTO;
 import br.edu.uesb.prematricula.user.model.entity.User;
 import br.edu.uesb.prematricula.user.model.enums.UserRole;
 import br.edu.uesb.prematricula.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -62,7 +62,7 @@ public class StudentService {
         return toResponse(student);
     }
 
-    private Student getStudent(UUID id) {
+    public Student getStudent(UUID id) {
 
         return studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found."));
@@ -96,6 +96,12 @@ public class StudentService {
     public Student findByRegistrationNumber(String registrationNumber) {
         return studentRepository.findByRegistrationNumber(registrationNumber)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found"));
+    }
+
+    public Student findByUser(User user) {
+
+        return studentRepository.findByUser(user)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found."));
     }
 
 }

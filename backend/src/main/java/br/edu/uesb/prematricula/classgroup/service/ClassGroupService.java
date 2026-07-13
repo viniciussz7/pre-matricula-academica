@@ -1,6 +1,5 @@
 package br.edu.uesb.prematricula.classgroup.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClassGroupService {
 
-    private ClassGroupRepository repository;
-    private DisciplineRepository disciplineRepository;
-    private AcademicPeriodRepository academicPeriodRepository;
+    private final ClassGroupRepository repository;
+    private final DisciplineRepository disciplineRepository;
+    private final AcademicPeriodRepository academicPeriodRepository;
 
     @Transactional
     public ClassGroupResponseDTO create(ClassGroupRequestDTO dto) {
@@ -93,6 +92,13 @@ public class ClassGroupService {
         ClassGroup entity = findEntityById(id);
         entity.setActive(false);
         repository.save(entity);
+    }
+
+    public ClassGroup getClassGroup(UUID id) {
+
+        return repository.findById(id)
+                .orElseThrow(() -> new ClassGroupNotFoundException(
+                        "Class group not found."));
     }
 
     private ClassGroup findEntityById(UUID id) {

@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AcademicPeriodController {
 
-    private AcademicPeriodService service;
+    private final AcademicPeriodService service;
 
     @PostMapping
     public ResponseEntity<AcademicPeriodResponseDTO> create(@RequestBody @Valid AcademicPeriodRequestDTO dto) {

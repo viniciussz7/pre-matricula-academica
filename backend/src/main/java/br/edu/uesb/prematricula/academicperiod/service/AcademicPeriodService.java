@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.uesb.prematricula.academicperiod.exception.AcademicPeriodNotFoundException;
 import br.edu.uesb.prematricula.academicperiod.exception.ResourceNotFoundException;
@@ -12,14 +13,13 @@ import br.edu.uesb.prematricula.academicperiod.model.dto.request.AcademicPeriodR
 import br.edu.uesb.prematricula.academicperiod.model.dto.response.AcademicPeriodResponseDTO;
 import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
 import br.edu.uesb.prematricula.academicperiod.repository.AcademicPeriodRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AcademicPeriodService {
 
-    private AcademicPeriodRepository repository;
+    private final AcademicPeriodRepository repository;
 
     @Transactional
     public AcademicPeriodResponseDTO create(AcademicPeriodRequestDTO dto) {

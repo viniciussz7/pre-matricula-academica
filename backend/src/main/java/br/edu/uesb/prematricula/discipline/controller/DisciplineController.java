@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DisciplineController {
 
-    private DisciplineService service;
+    private final DisciplineService service;
 
     @PostMapping
     public ResponseEntity<DisciplineResponseDTO> create(@RequestBody @Valid DisciplineRequestDTO dto) {

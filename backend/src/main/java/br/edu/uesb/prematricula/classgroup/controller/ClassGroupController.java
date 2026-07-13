@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClassGroupController {
 
-    private ClassGroupService service;
+    private final ClassGroupService service;
 
     @PostMapping
     public ResponseEntity<ClassGroupResponseDTO> create(@RequestBody @Valid ClassGroupRequestDTO dto) {

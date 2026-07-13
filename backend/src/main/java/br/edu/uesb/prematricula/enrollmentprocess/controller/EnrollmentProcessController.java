@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,9 @@ import br.edu.uesb.prematricula.enrollmentprocess.model.dto.request.CreateEnroll
 import br.edu.uesb.prematricula.enrollmentprocess.model.dto.request.UpdateEnrollmentProcessRequestDTO;
 import br.edu.uesb.prematricula.enrollmentprocess.model.dto.response.EnrollmentProcessResponseDTO;
 import br.edu.uesb.prematricula.enrollmentprocess.service.EnrollmentProcessService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import br.edu.uesb.prematricula.enrollmentprocessclasses.model.dto.response.EnrollmentProcessClassResponseDTO;
+import br.edu.uesb.prematricula.enrollmentprocessclasses.service.EnrollmentProcessClassService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class EnrollmentProcessController {
 
     private final EnrollmentProcessService enrollmentProcessService;
+    private final EnrollmentProcessClassService enrollmentProcessClassService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -81,6 +85,14 @@ public class EnrollmentProcessController {
     public ResponseEntity<EnrollmentProcessResponseDTO> findOpenProcess() {
         return ResponseEntity.ok(
                 enrollmentProcessService.findOpenProcess());
+    }
+
+    @GetMapping("/open/classes")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+    public ResponseEntity<List<EnrollmentProcessClassResponseDTO>> findOpenClasses() {
+
+        return ResponseEntity.ok(
+                enrollmentProcessClassService.findOpenProcessClasses());
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.uesb.prematricula.academicperiod.model.entity.AcademicPeriod;
 import br.edu.uesb.prematricula.academicperiod.service.AcademicPeriodService;
@@ -17,7 +18,6 @@ import br.edu.uesb.prematricula.enrollmentprocess.model.dto.response.EnrollmentP
 import br.edu.uesb.prematricula.enrollmentprocess.model.entity.EnrollmentProcess;
 import br.edu.uesb.prematricula.enrollmentprocess.model.enums.EnrollmentProcessStatus;
 import br.edu.uesb.prematricula.enrollmentprocess.repository.EnrollmentProcessRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -98,17 +98,20 @@ public class EnrollmentProcessService {
         enrollmentProcessRepository.save(process);
     }
 
-    public EnrollmentProcessResponseDTO findOpenProcess() {
+    public EnrollmentProcess getOpenProcess() {
 
-        EnrollmentProcess process = enrollmentProcessRepository
+        return enrollmentProcessRepository
                 .findByActiveTrue()
                 .stream()
                 .filter(EnrollmentProcess::isOpen)
                 .findFirst()
                 .orElseThrow(() -> new EnrollmentProcessNotFoundException(
                         "No open enrollment process found."));
+    }
 
-        return toResponse(process);
+    public EnrollmentProcessResponseDTO findOpenProcess() {
+
+        return toResponse(getOpenProcess());
     }
 
     public EnrollmentProcess getEnrollmentProcess(UUID id) {

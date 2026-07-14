@@ -9,9 +9,13 @@ export class ClassGroupService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getAll(): Observable<ClassGroup[]> {
+    return this.http.get<ClassGroup[]>(this.apiUrl);
   }
+
+  getById(id: string): Observable<ClassGroup> {
+      return this.http.get<ClassGroup>(`${this.apiUrl}/${id}`);
+    }
 
   create(data: ClassGroup): Observable<ClassGroup> {
     return this.http.post<ClassGroup>(this.apiUrl, data);

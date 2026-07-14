@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/enrollment-process-classes")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class EnrollmentProcessClassController {
 

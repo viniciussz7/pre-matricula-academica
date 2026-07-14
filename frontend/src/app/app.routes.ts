@@ -78,8 +78,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/student/dashboard/dashboard.component').then(m => m.DashboardComponent) 
       },
       { 
-        path: 'enrollment-process', 
-        loadComponent: () => import('./features/student/enrollmentprocess/pages/enrollment-process.component').then(m => m.EnrollmentProcessComponent) 
+        path: 'enrollment', 
+        loadComponent: () => import('./features/student/enrollment/pages/enrollment.component').then(m => m.EnrollmentComponent) 
       },
       { 
         path: 'my-history', 

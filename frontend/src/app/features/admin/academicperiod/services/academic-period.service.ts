@@ -7,21 +7,25 @@ import { AcademicPeriod } from '../models/academic-period.model';
 export class AcademicPeriodService {
   private apiUrl = 'http://localhost:8080/academic-periods';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<AcademicPeriod[]> {
     return this.http.get<AcademicPeriod[]>(this.apiUrl);
   }
 
-  create(data: AcademicPeriod): Observable<AcademicPeriod> { 
-    return this.http.post<AcademicPeriod>(this.apiUrl, data); 
+  getById(id: string): Observable<AcademicPeriod> {
+    return this.http.get<AcademicPeriod>(`${this.apiUrl}/${id}`);
   }
 
-  update(id: string, data: AcademicPeriod): Observable<AcademicPeriod> { 
-    return this.http.put<AcademicPeriod>(`${this.apiUrl}/${id}`, data); 
+  create(data: AcademicPeriod): Observable<AcademicPeriod> {
+    return this.http.post<AcademicPeriod>(this.apiUrl, data);
   }
 
-  delete(id: string): Observable<void> { 
-    return this.http.delete<void>(`${this.apiUrl}/${id}`); 
+  update(id: string, data: AcademicPeriod): Observable<AcademicPeriod> {
+    return this.http.put<AcademicPeriod>(`${this.apiUrl}/${id}`, data);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

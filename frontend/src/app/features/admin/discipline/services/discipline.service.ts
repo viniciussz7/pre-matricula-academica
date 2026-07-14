@@ -9,10 +9,14 @@ import { Discipline } from '../models/discipline.model';
 export class DisciplineService {
   private apiUrl = 'http://localhost:8080/disciplines';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<Discipline[]> {
     return this.http.get<Discipline[]>(this.apiUrl);
+  }
+
+  getById(id: string): Observable<Discipline> {
+    return this.http.get<Discipline>(`${this.apiUrl}/${id}`);
   }
 
   create(discipline: Discipline): Observable<Discipline> {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClassGroupService } from '../../services/class-group.service';
@@ -32,7 +32,8 @@ export class ClassGroupModalComponent implements OnInit, OnChanges {
     private fb: FormBuilder, 
     private service: ClassGroupService,
     private disciplineService: DisciplineService,
-    private periodService: AcademicPeriodService
+    private periodService: AcademicPeriodService,
+    private cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
       code: ['', Validators.required],
@@ -60,6 +61,7 @@ export class ClassGroupModalComponent implements OnInit, OnChanges {
         console.error('Erro ao buscar disciplinas', err);
       }
     });
+    this.cdr.detectChanges();
   }
 
   loadPeriods() {
@@ -71,6 +73,7 @@ export class ClassGroupModalComponent implements OnInit, OnChanges {
         console.error('Erro ao buscar períodos', err);
       }
     });
+    this.cdr.detectChanges();
   }
 
 

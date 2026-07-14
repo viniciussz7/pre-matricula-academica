@@ -1,66 +1,61 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
-import { StudentService } from '../../../student/services/student.service';
-import { DisciplineService } from '../../../discipline/services/discipline.service';
-import { AcademicPeriodService } from '../../../academicperiod/services/academic-period.service';
-import { ClassGroupService } from '../../../classgroup/services/class-group.service';
-import { forkJoin } from 'rxjs';
+
+interface DashboardAction {
+  title: string;
+  description: string;
+  route: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, NgIconComponent],
-  templateUrl: './dashboard.html'
+  imports: [
+    CommonModule,
+    RouterLink,
+    NgIconComponent,
+  ],
+  templateUrl: 'dashboard.html',
 })
-export class DashboardComponent implements OnInit {
-
-  // Estrutura de dados para os Cards
-  stats = [
-    { title: 'Total de Alunos', value: '0', icon: 'heroUserGroup', color: 'bg-blue-500' },
-    { title: 'Disciplinas Ativas', value: '0', icon: 'heroBookOpen', color: 'bg-violet-500' },
-    { title: 'Períodos Ativos', value: '0', icon: 'heroCalendarDays', color: 'bg-indigo-500' },
-    { title: 'Turmas Ativas', value: '0', icon: 'heroAcademicCap', color: 'bg-rose-500' },
-    { title: 'Pré-Matrículas Ativas', value: '0', icon: 'heroClock', color: 'bg-amber-500' },
+export class DashboardComponent {
+  actions: DashboardAction[] = [
+    {
+    title: 'Gerenciar Alunos',
+    description:
+      'Cadastre, consulte e gerencie os alunos do sistema.',
+    route: '/admin/student',
+    icon: 'heroUserGroup',
+  },
+  {
+    title: 'Gerenciar Administradores',
+    description:
+      'Cadastre e controle os usuários administrativos.',
+    route: '/admin/administrator',
+    icon: 'heroUserCircle',
+  },
+    {
+      title: 'Gerenciar Turmas',
+      description:
+        'Cadastre turmas, defina vagas e associe disciplinas e períodos.',
+      route: '/admin/class-group',
+      icon: 'heroAcademicCap',
+    },
+    {
+      title: 'Gerenciar Processos de Pré-Matrícula',
+      description:
+        'Crie processos, defina datas e escolha as turmas participantes.',
+      route: '/admin/enrollment-process',
+      icon: 'heroClipboardDocumentCheck',
+    },
+    {
+      title: 'Visualizar Relatórios',
+      description:
+        'Acompanhe demanda, inscrições e indicadores dos processos.',
+      route: '/admin/report',
+      icon: 'heroChartBar',
+    },
   ];
-
-  recentActivities: any[] = [];
-
-  constructor(
-    private studentService: StudentService,
-    private disciplineService: DisciplineService,
-    private periodService: AcademicPeriodService,
-    private classService: ClassGroupService,
-    private cdr: ChangeDetectorRef,
-  ) { }
-
-  ngOnInit(): void {
-    this.loadDashboardData();
-  }
-
-  loadDashboardData(): void {
-    // forkJoin dispara todas as chamadas simultaneamente
-    forkJoin({
-      students: this.studentService.getAll(),
-      disciplines: this.disciplineService.getAll(),
-      periods: this.periodService.getAll(),
-      classes: this.classService.getAll(),
-    }).subscribe({
-      next: (data) => {
-        // Atribuição segura com fallback (|| []) caso o retorno seja nulo
-        this.stats[0].value = (data.students || []).filter(item => item.active === true).length.toString();
-        this.stats[1].value = (data.disciplines || []).filter(item => item.active === true).length.toString();
-        this.stats[2].value = (data.periods || []).filter(item => item.active === true).length.toString();
-        this.stats[3].value = (data.classes || []).filter(item => item.active === true).length.toString();
-
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erro ao carregar dados do dashboard:', err);
-        // Opcional: tratar erro na tela se necessário
-      }
-    });
-
-  }
 }

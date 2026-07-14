@@ -1,0 +1,813 @@
+<div
+  class="relative mx-auto w-full max-w-[95%] px-4 py-8"
+>
+  <!-- Cabeçalho -->
+  <div class="mb-10 text-center">
+    <h1 class="text-2xl font-bold text-[#232066]">
+      Relatórios de Pré-Matrícula
+    </h1>
+
+    <p class="mt-2 text-sm text-gray-500">
+      Consulte indicadores, demanda por turma e participação dos alunos.
+    </p>
+
+    <div class="separator-line"></div>
+  </div>
+
+  <!-- Seleção do processo -->
+  <section
+    class="mb-8 rounded-2xl bg-white p-6 shadow-lg"
+  >
+    <div
+      class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"
+    >
+      <div class="w-full lg:max-w-xl">
+        <label
+          class="mb-2 block text-sm font-bold text-[#232066]"
+        >
+          Processo de Pré-Matrícula:
+        </label>
+
+        <select
+          [(ngModel)]="selectedProcessId"
+          [disabled]="isLoadingProcesses"
+          class="w-full rounded-lg border border-gray-300 bg-white p-3 text-sm outline-none transition focus:border-[#232066] focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+          (ngModelChange)="onProcessChange()"
+        >
+          <option value="">
+            {{
+              isLoadingProcesses
+                ? 'Carregando processos...'
+                : 'Selecione um processo'
+            }}
+          </option>
+
+          <option
+            *ngFor="let process of processes"
+            [value]="process.id"
+          >
+            {{ process.title }}
+          </option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="selectedProcess"
+        class="flex flex-wrap items-center gap-3"
+      >
+        <div
+          class="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2"
+        >
+          <p
+            class="text-xs font-semibold uppercase text-gray-500"
+          >
+            Situação
+          </p>
+
+          <p class="font-bold text-[#232066]">
+            {{ getProcessStatus() }}
+          </p>
+        </div>
+
+        <div
+          class="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2"
+        >
+          <p
+            class="text-xs font-semibold uppercase text-gray-500"
+          >
+            Período
+          </p>
+
+          <p class="font-bold text-[#232066]">
+            {{
+              selectedProcess.startDate
+                | date: 'dd/MM/yyyy'
+            }}
+            a
+            {{
+              selectedProcess.endDate
+                | date: 'dd/MM/yyyy'
+            }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="processErrorMessage"
+      class="mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700"
+    >
+      {{ processErrorMessage }}
+    </div>
+  </section>
+
+  <!-- Estado inicial -->
+  <section
+    *ngIf="
+      !selectedProcessId &&
+      !isLoadingProcesses
+    "
+    class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center shadow-sm"
+  >
+    <div
+      class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-[#232066]"
+    >
+      <svg
+        class="h-8 w-8"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"
+        ></path>
+      </svg>
+    </div>
+
+    <h2 class="mt-4 font-bold text-gray-800">
+      Selecione um processo
+    </h2>
+
+    <p class="mt-2 text-sm text-gray-500">
+      Os relatórios serão exibidos após a seleção de um processo.
+    </p>
+  </section>
+
+  <!-- Carregamento -->
+  <div
+    *ngIf="isLoadingReports"
+    class="flex min-h-64 items-center justify-center rounded-2xl bg-white shadow-sm"
+  >
+    <div class="flex flex-col items-center gap-3">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-[#232066]"
+      ></div>
+
+      <p class="text-sm text-gray-500">
+        Carregando relatórios...
+      </p>
+    </div>
+  </div>
+
+  <!-- Erro -->
+  <div
+    *ngIf="
+      reportErrorMessage &&
+      !isLoadingReports
+    "
+    class="rounded-xl border border-red-200 bg-red-50 p-5"
+  >
+    <p class="font-medium text-red-700">
+      {{ reportErrorMessage }}
+    </p>
+
+    <button
+      type="button"
+      class="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+      (click)="loadProcessReports()"
+    >
+      Tentar novamente
+    </button>
+  </div>
+
+  <ng-container
+    *ngIf="
+      summary &&
+      !isLoadingReports &&
+      !reportErrorMessage
+    "
+  >
+    <!-- ============================================ -->
+    <!-- RELATÓRIO 1: RESUMO GERAL -->
+    <!-- ============================================ -->
+
+    <section class="mb-8">
+      <div
+        class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2
+            class="text-xl font-bold text-[#232066]"
+          >
+            Resumo Geral
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Indicadores gerais do processo selecionado.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled
+          title="A exportação em PDF será implementada posteriormente."
+          class="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600"
+        >
+          Exportar PDF
+        </button>
+      </div>
+
+      <div
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Matrículas ativas
+          </p>
+
+          <p
+            class="mt-2 text-3xl font-bold text-[#232066]"
+          >
+            {{ summary.activeEnrollments }}
+          </p>
+
+          <p class="mt-1 text-xs text-gray-400">
+            de {{ summary.totalEnrollments }} registradas
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Matrículas canceladas
+          </p>
+
+          <p class="mt-2 text-3xl font-bold text-red-600">
+            {{ summary.cancelledEnrollments }}
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Turmas ofertadas
+          </p>
+
+          <p
+            class="mt-2 text-3xl font-bold text-[#232066]"
+          >
+            {{ summary.totalClasses }}
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Seleções de turmas
+          </p>
+
+          <p
+            class="mt-2 text-3xl font-bold text-[#232066]"
+          >
+            {{ summary.totalSelections }}
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Média por aluno
+          </p>
+
+          <p
+            class="mt-2 text-3xl font-bold text-[#232066]"
+          >
+            {{
+              summary.averageClassesPerActiveEnrollment
+                | number: '1.0-2'
+            }}
+          </p>
+
+          <p class="mt-1 text-xs text-gray-400">
+            turmas por pré-matrícula
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Turmas lotadas
+          </p>
+
+          <p
+            class="mt-2 text-3xl font-bold text-yellow-600"
+          >
+            {{ summary.fullClasses }}
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Acima da capacidade
+          </p>
+
+          <p class="mt-2 text-3xl font-bold text-red-600">
+            {{ summary.oversubscribedClasses }}
+          </p>
+        </article>
+
+        <article
+          class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+        >
+          <p
+            class="text-sm font-medium text-gray-500"
+          >
+            Maior demanda
+          </p>
+
+          <ng-container
+            *ngIf="
+              summary.mostDemandedClass;
+              else noDemandedClass
+            "
+          >
+            <p
+              class="mt-2 font-bold text-[#232066]"
+            >
+              {{ summary.mostDemandedClass.classCode }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-600">
+              {{ summary.mostDemandedClass.className }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+              {{
+                summary.mostDemandedClass.enrolledStudents
+              }}
+              alunos
+            </p>
+          </ng-container>
+
+          <ng-template #noDemandedClass>
+            <p class="mt-2 text-sm text-gray-400">
+              Sem dados
+            </p>
+          </ng-template>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- RELATÓRIO 2: DEMANDA POR TURMA -->
+    <!-- ============================================ -->
+
+    <section
+      class="mb-8 rounded-2xl bg-white p-6 shadow-lg"
+    >
+      <div
+        class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2
+            class="text-xl font-bold text-[#232066]"
+          >
+            Demanda por Turma
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Ocupação e disponibilidade das turmas.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled
+          title="A exportação em PDF será implementada posteriormente."
+          class="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600"
+        >
+          Exportar PDF
+        </button>
+      </div>
+
+      <div
+        *ngIf="
+          classDemand.length > 0;
+          else noClassDemand
+        "
+        class="overflow-x-auto rounded-xl border border-gray-200"
+      >
+        <table
+          class="w-full min-w-[950px] border-collapse"
+        >
+          <thead>
+            <tr class="bg-[#232066] text-white">
+              <th class="p-3 text-left">
+                Turma
+              </th>
+
+              <th class="p-3 text-left">
+                Disciplina
+              </th>
+
+              <th class="p-3 text-center">
+                Vagas
+              </th>
+
+              <th class="p-3 text-center">
+                Inscritos
+              </th>
+
+              <th class="p-3 text-center">
+                Restantes
+              </th>
+
+              <th class="p-3 text-center">
+                Ocupação
+              </th>
+
+              <th class="p-3 text-center">
+                Excedente
+              </th>
+
+              <th class="p-3 text-center">
+                Situação
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let class of classDemand"
+              class="border-b transition hover:bg-gray-50"
+            >
+              <td class="p-3">
+                <p class="font-bold text-[#232066]">
+                  {{ class.classCode }}
+                </p>
+
+                <p class="text-sm text-gray-500">
+                  {{ class.className }}
+                </p>
+              </td>
+
+              <td class="p-3">
+                <p class="font-medium text-gray-800">
+                  {{ class.disciplineName }}
+                </p>
+
+                <p class="text-xs text-gray-500">
+                  {{ class.disciplineCode }}
+                </p>
+              </td>
+
+              <td class="p-3 text-center">
+                {{ class.vacancies }}
+              </td>
+
+              <td class="p-3 text-center font-bold">
+                {{ class.enrolledStudents }}
+              </td>
+
+              <td
+                class="p-3 text-center"
+                [ngClass]="
+                  class.remainingVacancies < 0
+                    ? 'font-bold text-red-600'
+                    : 'text-gray-700'
+                "
+              >
+                {{ class.remainingVacancies }}
+              </td>
+
+              <td class="p-3 text-center">
+                {{
+                  class.occupancyPercentage
+                    | number: '1.0-2'
+                }}%
+              </td>
+
+              <td class="p-3 text-center">
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-bold"
+                  [ngClass]="
+                    class.allowOversubscription
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-200 text-gray-700'
+                  "
+                >
+                  {{
+                    class.allowOversubscription
+                      ? 'Permitido'
+                      : 'Não permitido'
+                  }}
+                </span>
+              </td>
+
+              <td class="p-3 text-center">
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-bold"
+                  [ngClass]="
+                    getOccupancyClasses(class)
+                  "
+                >
+                  {{ getOccupancyLabel(class) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noClassDemand>
+        <div
+          class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center text-sm text-gray-500"
+        >
+          Nenhuma turma ativa foi encontrada no processo.
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- RELATÓRIO 3: ALUNOS POR TURMA -->
+    <!-- ============================================ -->
+
+    <section
+      class="mb-8 rounded-2xl bg-white p-6 shadow-lg"
+    >
+      <div
+        class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2
+            class="text-xl font-bold text-[#232066]"
+          >
+            Alunos Inscritos por Turma
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Selecione uma turma para visualizar os alunos.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled
+          title="A exportação em PDF será implementada posteriormente."
+          class="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600"
+        >
+          Exportar PDF
+        </button>
+      </div>
+
+      <div class="mb-5 max-w-xl">
+        <label
+          class="mb-2 block text-sm font-bold text-[#232066]"
+        >
+          Turma:
+        </label>
+
+        <select
+          [(ngModel)]="selectedProcessClassId"
+          class="w-full rounded-lg border border-gray-300 bg-white p-3 outline-none focus:border-[#232066] focus:ring-2 focus:ring-indigo-100"
+          (ngModelChange)="onProcessClassChange()"
+        >
+          <option value="">
+            Selecione uma turma
+          </option>
+
+          <option
+            *ngFor="let class of classDemand"
+            [value]="class.enrollmentProcessClassId"
+          >
+            {{ class.classCode }} —
+            {{ class.className }}
+          </option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="studentErrorMessage"
+        class="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700"
+      >
+        {{ studentErrorMessage }}
+      </div>
+
+      <div
+        *ngIf="isLoadingStudents"
+        class="flex min-h-32 items-center justify-center"
+      >
+        <div
+          class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#232066]"
+        ></div>
+      </div>
+
+      <div
+        *ngIf="
+          selectedProcessClassId &&
+          !isLoadingStudents &&
+          enrolledStudents.length > 0
+        "
+        class="overflow-x-auto rounded-xl border border-gray-200"
+      >
+        <table
+          class="w-full min-w-[750px] border-collapse"
+        >
+          <thead>
+            <tr class="bg-[#232066] text-white">
+              <th class="p-3 text-left">
+                Matrícula
+              </th>
+
+              <th class="p-3 text-left">
+                Aluno
+              </th>
+
+              <th class="p-3 text-left">
+                E-mail
+              </th>
+
+              <th class="p-3 text-center">
+                Data da seleção
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let student of enrolledStudents"
+              class="border-b hover:bg-gray-50"
+            >
+              <td class="p-3 font-semibold">
+                {{ student.registrationNumber }}
+              </td>
+
+              <td class="p-3">
+                {{ student.studentName }}
+              </td>
+
+              <td class="p-3 text-gray-600">
+                {{ student.studentEmail }}
+              </td>
+
+              <td class="p-3 text-center">
+                {{
+                  student.selectedAt
+                    | date: 'dd/MM/yyyy HH:mm'
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        *ngIf="
+          selectedProcessClassId &&
+          !isLoadingStudents &&
+          enrolledStudents.length === 0 &&
+          !studentErrorMessage
+        "
+        class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500"
+      >
+        Nenhum aluno possui pré-matrícula ativa nesta turma.
+      </div>
+
+      <div
+        *ngIf="!selectedProcessClassId"
+        class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500"
+      >
+        Selecione uma turma para consultar os alunos inscritos.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- RELATÓRIO 4: ALUNOS SEM PRÉ-MATRÍCULA -->
+    <!-- ============================================ -->
+
+    <section
+      class="rounded-2xl bg-white p-6 shadow-lg"
+    >
+      <div
+        class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2
+            class="text-xl font-bold text-[#232066]"
+          >
+            Alunos sem Pré-Matrícula
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            Alunos ativos sem pré-matrícula ativa no processo.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled
+          title="A exportação em PDF será implementada posteriormente."
+          class="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-600"
+        >
+          Exportar PDF
+        </button>
+      </div>
+
+      <div
+        *ngIf="
+          studentsWithoutEnrollment.length > 0;
+          else noStudentsWithoutEnrollment
+        "
+        class="overflow-x-auto rounded-xl border border-gray-200"
+      >
+        <table
+          class="w-full min-w-[750px] border-collapse"
+        >
+          <thead>
+            <tr class="bg-[#232066] text-white">
+              <th class="p-3 text-left">
+                Matrícula
+              </th>
+
+              <th class="p-3 text-left">
+                Aluno
+              </th>
+
+              <th class="p-3 text-left">
+                E-mail
+              </th>
+
+              <th class="p-3 text-center">
+                Primeiro acesso
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="
+                let student of studentsWithoutEnrollment
+              "
+              class="border-b hover:bg-gray-50"
+            >
+              <td class="p-3 font-semibold">
+                {{ student.registrationNumber }}
+              </td>
+
+              <td class="p-3">
+                {{ student.studentName }}
+              </td>
+
+              <td class="p-3 text-gray-600">
+                {{ student.studentEmail }}
+              </td>
+
+              <td class="p-3 text-center">
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-bold"
+                  [ngClass]="
+                    student.firstAccess
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-green-100 text-green-700'
+                  "
+                >
+                  {{
+                    student.firstAccess
+                      ? 'Pendente'
+                      : 'Concluído'
+                  }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noStudentsWithoutEnrollment>
+        <div
+          class="rounded-xl border border-green-200 bg-green-50 p-10 text-center"
+        >
+          <p class="font-semibold text-green-700">
+            Todos os alunos ativos possuem pré-matrícula neste processo.
+          </p>
+        </div>
+      </ng-template>
+    </section>
+  </ng-container>
+</div>

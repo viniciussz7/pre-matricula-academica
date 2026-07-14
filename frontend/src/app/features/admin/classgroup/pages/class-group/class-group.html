@@ -1,105 +1,426 @@
-  <div class="py-8 px-4 w-full max-w-[95%] mx-auto relative">
-  <div class="text-center mb-10">
+<div class="relative mx-auto w-full max-w-[95%] px-4 py-8">
+
+  <!-- Cabeçalho -->
+  <div class="mb-10 text-center">
     <h1 class="text-2xl font-bold text-[#232066]">
       Gestão de Turmas
     </h1>
+
     <div class="separator-line"></div>
   </div>
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg">
-    <div class="flex flex-col md:flex-row items-end justify-between gap-4 mb-6">
-      
-      <div class="w-full md:w-1/2 relative">
-        <label class="block text-sm font-bold text-[#232066] mb-1">Buscar Turma:</label>
+  <div class="rounded-2xl bg-white p-8 shadow-lg">
+
+    <!-- Busca e ações -->
+    <div
+      class="mb-6 flex flex-col items-end justify-between gap-4 md:flex-row"
+    >
+      <div class="relative w-full md:w-1/2">
+        <label
+          class="mb-1 block text-sm font-bold text-[#232066]"
+        >
+          Buscar turma:
+        </label>
+
         <div class="relative">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+          >
+            <svg
+              class="h-5 w-5 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
           </div>
-          <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" class="w-full p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#232066]" placeholder="Digite o nome ou código...">
+
+          <input
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+            class="w-full rounded border border-gray-300 p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-[#232066]"
+            placeholder="Nome, código, disciplina ou período..."
+          />
         </div>
       </div>
 
-      <div class="flex gap-2 flex-wrap">
-        <button (click)="openCreateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      <div class="flex flex-wrap gap-2">
+
+        <button
+          type="button"
+          (click)="openCreateModal()"
+          class="flex items-center gap-2 rounded bg-[#232066] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#322A6A]"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+
           Cadastrar Turma
         </button>
-        
-        <button (click)="openUpdateModal()" class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedClassGroup">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+
+        <button
+          type="button"
+          (click)="openUpdateModal()"
+          [disabled]="!selectedClassGroup"
+          class="flex items-center gap-2 rounded bg-[#232066] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#322A6A] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+            ></path>
+          </svg>
+
           Editar Turma
         </button>
-        
-        <button (click)="inactivateClassGroup()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors" [disabled]="!selectedClassGroup">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+
+        <button
+          type="button"
+          (click)="inactivateClassGroup()"
+          [disabled]="
+            !selectedClassGroup ||
+            !selectedClassGroup.active
+          "
+          class="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+            ></path>
+          </svg>
+
           Inativar Turma
         </button>
 
-        <button (click)="generatePDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <button
+          type="button"
+          (click)="generatePDF()"
+          class="flex items-center gap-2 rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+
           Exportar Tabela
         </button>
       </div>
     </div>
 
-    <div class="overflow-x-auto rounded border border-gray-200">
-      <table class="w-full border-collapse">
-        <thead>
-          <tr class="bg-[#232066] text-white">
-            <th class="p-3 text-left w-1/6">Código</th>
-            <th class="p-3 text-left w-2/6">Nome</th>
-            <th class="p-3 text-center w-1/6">Disciplina</th>
-            <th class="p-3 text-center w-1/6">Período</th>
-            <th class="p-3 text-center w-1/6">Vagas</th>
-            <th class="p-3 text-center w-1/6">Permite Ultrapassa?</th>
-            <th class="p-3 text-center w-1/6">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let d of filteredClassGroups" 
-              (click)="selectClassGroup(d)" 
-              [class.bg-[#232066]]="selectedClassGroup?.id === d.id"
-              [class.text-white]="selectedClassGroup?.id === d.id"
-              [class.bg-gray-100]="!d.active && selectedClassGroup?.id !== d.id"
-              [class.opacity-60]="!d.active && selectedClassGroup?.id !== d.id"
-              class="border-b cursor-pointer hover:bg-[#322A6A] hover:text-white transition-colors">
-            
-            <td class="p-3 font-semibold">{{d.code}}</td>
-            
-            <td class="p-3">{{d.name}}</td>
-            
-            <td class="p-3 text-center">{{ getDisciplineInfo(d.disciplineId) }}</td>
-            
-            <td class="p-3 text-center font-semibold">{{ getPeriodInfo(d.academicPeriodId) }}</td>
-            
-            <td class="p-3 text-center">{{d.vacancies}}</td>
-            
-            <td class="p-3 text-center">
-              <span *ngIf="d.allowOversubscription" class="text-xs px-2 py-1 rounded font-bold"
-                    [ngClass]="selectedClassGroup?.id === d.id ? 'bg-white text-[#232066]' : 'bg-green-100 text-green-800'">Sim</span>
-              <span *ngIf="!d.allowOversubscription" class="text-xs px-2 py-1 rounded font-bold"
-                    [ngClass]="selectedClassGroup?.id === d.id ? 'bg-gray-400 text-white' : 'bg-gray-200 text-gray-800'">Não</span>
-            </td>
-            
-            <td class="p-3 text-center">
-              <span *ngIf="d.active" class="text-xs px-2 py-1 rounded font-bold"
-                    [ngClass]="selectedClassGroup?.id === d.id ? 'bg-white text-[#232066]' : 'bg-green-100 text-green-800'">Ativo</span>
-              <span *ngIf="!d.active" class="text-xs px-2 py-1 rounded font-bold"
-                    [ngClass]="selectedClassGroup?.id === d.id ? 'bg-red-400 text-white' : 'bg-red-100 text-red-800'">Inativo</span>
-            </td>
-          </tr>
-          
-          <tr *ngIf="filteredClassGroups.length === 0">
-            <td colspan="7" class="p-6 text-center text-gray-500">Nenhuma turma encontrada.</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Mensagem de erro -->
+    <div
+      *ngIf="loadErrorMessage"
+      class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700"
+    >
+      {{ loadErrorMessage }}
+    </div>
+
+    <!-- Carregamento -->
+    <div
+      *ngIf="isLoading"
+      class="flex min-h-52 items-center justify-center"
+    >
+      <div class="flex flex-col items-center gap-3">
+        <div
+          class="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-[#232066]"
+        ></div>
+
+        <p class="text-sm text-gray-500">
+          Carregando turmas...
+        </p>
+      </div>
+    </div>
+
+    <!-- Períodos agrupados -->
+    <div
+      *ngIf="!isLoading && groupedClassGroups.length > 0"
+      class="space-y-4"
+    >
+      <section
+        *ngFor="let group of groupedClassGroups"
+        class="overflow-hidden rounded-xl border border-gray-200 bg-white"
+      >
+
+        <!-- Toggle do período -->
+        <button
+          type="button"
+          class="flex w-full items-center justify-between gap-4 bg-gray-50 px-5 py-4 text-left transition hover:bg-gray-100"
+          (click)="togglePeriod(group.id)"
+        >
+          <div class="flex min-w-0 items-center gap-4">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-[#232066]"
+            >
+              <svg
+                class="h-5 w-5 transition-transform duration-200"
+                [class.rotate-90]="isPeriodExpanded(group.id)"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </div>
+
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="font-bold text-[#232066]">
+                  {{ group.code }}
+                </h2>
+
+                <span
+                  class="rounded-full px-2.5 py-1 text-xs font-semibold"
+                  [ngClass]="
+                    group.active
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-200 text-gray-600'
+                  "
+                >
+                  {{
+                    group.active
+                      ? 'Período ativo'
+                      : 'Período inativo'
+                  }}
+                </span>
+              </div>
+
+              <p class="mt-1 truncate text-sm text-gray-500">
+                {{ group.name }}
+              </p>
+            </div>
+          </div>
+
+          <div class="shrink-0 text-right">
+            <p class="text-xl font-bold text-[#232066]">
+              {{ group.classGroups.length }}
+            </p>
+
+            <p class="text-xs text-gray-500">
+              {{
+                group.classGroups.length === 1
+                  ? 'turma'
+                  : 'turmas'
+              }}
+            </p>
+          </div>
+        </button>
+
+        <!-- Tabela do período -->
+        <div
+          *ngIf="isPeriodExpanded(group.id)"
+          class="overflow-x-auto border-t border-gray-200"
+        >
+          <table class="w-full min-w-[1000px] border-collapse">
+            <thead>
+              <tr class="bg-[#232066] text-white">
+                <th class="p-3 text-left">
+                  Código
+                </th>
+
+                <th class="p-3 text-left">
+                  Nome
+                </th>
+
+                <th class="p-3 text-center">
+                  Disciplina
+                </th>
+
+                <th class="p-3 text-center">
+                  Vagas
+                </th>
+
+                <th class="p-3 text-center">
+                  Permite ultrapassar?
+                </th>
+
+                <th class="p-3 text-center">
+                  Status
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                *ngFor="let classGroup of group.classGroups"
+                (click)="selectClassGroup(classGroup)"
+                [class.bg-[#232066]]="
+                  selectedClassGroup?.id === classGroup.id
+                "
+                [class.text-white]="
+                  selectedClassGroup?.id === classGroup.id
+                "
+                [class.bg-gray-100]="
+                  !classGroup.active &&
+                  selectedClassGroup?.id !== classGroup.id
+                "
+                [class.opacity-60]="
+                  !classGroup.active &&
+                  selectedClassGroup?.id !== classGroup.id
+                "
+                class="cursor-pointer border-b transition-colors hover:bg-[#322A6A] hover:text-white"
+              >
+                <td class="p-3 font-semibold">
+                  {{ classGroup.code }}
+                </td>
+
+                <td class="p-3">
+                  {{ classGroup.name }}
+                </td>
+
+                <td class="p-3 text-center">
+                  {{
+                    getDisciplineInfo(
+                      classGroup.disciplineId
+                    )
+                  }}
+                </td>
+
+                <td class="p-3 text-center">
+                  {{ classGroup.vacancies }}
+                </td>
+
+                <td class="p-3 text-center">
+                  <span
+                    *ngIf="classGroup.allowOversubscription"
+                    class="rounded px-2 py-1 text-xs font-bold"
+                    [ngClass]="
+                      selectedClassGroup?.id === classGroup.id
+                        ? 'bg-white text-[#232066]'
+                        : 'bg-green-100 text-green-800'
+                    "
+                  >
+                    Sim
+                  </span>
+
+                  <span
+                    *ngIf="!classGroup.allowOversubscription"
+                    class="rounded px-2 py-1 text-xs font-bold"
+                    [ngClass]="
+                      selectedClassGroup?.id === classGroup.id
+                        ? 'bg-gray-400 text-white'
+                        : 'bg-gray-200 text-gray-800'
+                    "
+                  >
+                    Não
+                  </span>
+                </td>
+
+                <td class="p-3 text-center">
+                  <span
+                    *ngIf="classGroup.active"
+                    class="rounded px-2 py-1 text-xs font-bold"
+                    [ngClass]="
+                      selectedClassGroup?.id === classGroup.id
+                        ? 'bg-white text-[#232066]'
+                        : 'bg-green-100 text-green-800'
+                    "
+                  >
+                    Ativa
+                  </span>
+
+                  <span
+                    *ngIf="!classGroup.active"
+                    class="rounded px-2 py-1 text-xs font-bold"
+                    [ngClass]="
+                      selectedClassGroup?.id === classGroup.id
+                        ? 'bg-red-400 text-white'
+                        : 'bg-red-100 text-red-800'
+                    "
+                  >
+                    Inativa
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Nenhum resultado -->
+    <div
+      *ngIf="
+        !isLoading &&
+        groupedClassGroups.length === 0 &&
+        !loadErrorMessage
+      "
+      class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center"
+    >
+      <svg
+        class="mx-auto h-10 w-10 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+      </svg>
+
+      <p class="mt-3 font-medium text-gray-700">
+        Nenhuma turma encontrada
+      </p>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Altere os termos da pesquisa ou cadastre uma nova turma.
+      </p>
     </div>
   </div>
-  
-  <app-class-group-modal *ngIf="isModalOpen" 
+
+  <!-- Modal -->
+  <app-class-group-modal
+    *ngIf="isModalOpen"
     [classGroupToEdit]="selectedClassGroup"
-    (closeModal)="isModalOpen = false" 
-    (saveSuccess)="onModalSuccess()">
+    (closeModal)="isModalOpen = false"
+    (saveSuccess)="onModalSuccess()"
+  >
   </app-class-group-modal>
 </div>

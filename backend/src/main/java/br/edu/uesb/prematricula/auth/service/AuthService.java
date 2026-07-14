@@ -24,6 +24,18 @@ import br.edu.uesb.prematricula.verificationtoken.model.entity.VerificationToken
 import br.edu.uesb.prematricula.verificationtoken.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Serviço responsável pela autenticação e autorização no sistema
+ * de Pré-Matrícula Acadêmica.
+ *
+ * <p>
+ * Centraliza as regras de negócio relacionadas ao primeiro acesso,
+ * autenticação de usuários e geração de tokens JWT, garantindo
+ * a segurança e integridade do processo de login.
+ * </p>
+ *
+ * @author Equipe de Desenvolvimento
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -39,6 +51,22 @@ public class AuthService {
 
     private final EmailService emailService;
 
+    /**
+     * Solicita o token de primeiro acesso para um estudante.
+     *
+     * <p>
+     * Realiza validações de segurança verificando o número de matrícula,
+     * correspondência de email e se o primeiro acesso já foi realizado.
+     * Gera e envia um token de primeiro acesso por email.
+     * </p>
+     *
+     * @param dto dados necessários para solicitar primeiro acesso,
+     *            contendo número de matrícula e email
+     * @throws InvalidFirstAccessException
+     *                                     quando matrícula e email não
+     *                                     correspondem, ou se o
+     *                                     primeiro acesso já foi completado
+     */
     public void requestFirstAccess(FirstAccessRequestDTO dto) {
 
         Student student = studentService.findByRegistrationNumber(dto.registrationNumber());
@@ -61,6 +89,21 @@ public class AuthService {
 
     }
 
+    /**
+     * Confirma o primeiro acesso do usuário e define sua senha.
+     *
+     * <p>
+     * Valida o token de primeiro acesso, verifica correspondência
+     * de senhas, encoda a nova senha, marca o primeiro acesso como
+     * concluído e invalidar o token utilizado.
+     * </p>
+     *
+     * @param dto dados necessários para confirmar primeiro acesso,
+     *            contendo token e nova senha
+     * @throws InvalidFirstAccessException
+     *                                     quando o token for inválido ou as senhas
+     *                                     não corresponderem
+     */
     public void confirmFirstAccess(ConfirmFirstAccessRequestDTO dto) {
 
         VerificationToken verificationToken = verificationTokenService.validateToken(dto.token());
@@ -80,6 +123,20 @@ public class AuthService {
         verificationTokenService.markAsUsed(verificationToken);
     }
 
+    /**
+     * Realiza a autenticação de um usuário e gera token JWT.
+     *
+     * <p>
+     * Autentica o usuário utilizando email e senha, gera um token JWT
+     * com informações de autenticação e retorna um DTO contendo o token,
+     * role do usuário e dados específicos do tipo de usuário (admin ou estudante).
+     * </p>
+     *
+     * @param dto dados de login contendo email e senha do usuário
+     * @return resposta contendo token JWT, role e dados do usuário
+     * 
+     *                                 
+     */
     public AuthResponseDTO login(LoginRequestDTO dto) {
 
         Authentication authentication = authenticationManager.authenticate(

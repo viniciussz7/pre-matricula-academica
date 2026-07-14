@@ -1,0 +1,225 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+>
+  <div
+    class="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-xl"
+  >
+    <!-- Fechar -->
+    <button
+      type="button"
+      [disabled]="isSubmitting"
+      class="absolute right-5 top-5 text-gray-400 transition-colors hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+      (click)="closeModal.emit()"
+    >
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- Título -->
+    <h2
+      class="mb-6 text-center text-xl font-bold text-[#232066]"
+    >
+      {{
+        isEditMode
+          ? 'Editar Administrador'
+          : 'Cadastrar Administrador'
+      }}
+    </h2>
+
+    <!-- Erro -->
+    <div
+      *ngIf="errorMessage"
+      class="mb-6 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700 shadow-sm"
+    >
+      <svg
+        class="mt-0.5 h-5 w-5 shrink-0"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+        ></path>
+      </svg>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+
+    <form
+      [formGroup]="form"
+      class="flex flex-col gap-4"
+      (ngSubmit)="onSubmit()"
+    >
+      <!-- Nome -->
+      <div>
+        <label
+          class="mb-1 block text-sm font-bold text-[#232066]"
+        >
+          Nome:
+        </label>
+
+        <input
+          formControlName="fullName"
+          placeholder="Nome do administrador"
+          class="w-full rounded border p-2 outline-none transition focus:ring-2 focus:ring-[#232066]"
+          [ngClass]="
+            form.get('fullName')?.invalid &&
+            form.get('fullName')?.touched
+              ? 'border-red-500'
+              : 'border-gray-300'
+          "
+        />
+
+        <p
+          *ngIf="
+            form.get('fullName')?.invalid &&
+            form.get('fullName')?.touched
+          "
+          class="mt-1 text-xs font-medium text-red-600"
+        >
+          Informe um nome válido.
+        </p>
+      </div>
+
+      <!-- E-mail -->
+      <div>
+        <label
+          class="mb-1 block text-sm font-bold text-[#232066]"
+        >
+          E-mail:
+        </label>
+
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="administrador@uesb.br"
+          class="w-full rounded border p-2 outline-none transition focus:ring-2 focus:ring-[#232066]"
+          [ngClass]="
+            form.get('email')?.invalid &&
+            form.get('email')?.touched
+              ? 'border-red-500'
+              : 'border-gray-300'
+          "
+        />
+
+        <p
+          *ngIf="
+            form.get('email')?.invalid &&
+            form.get('email')?.touched
+          "
+          class="mt-1 text-xs font-medium text-red-600"
+        >
+          Informe um endereço de e-mail válido.
+        </p>
+      </div>
+
+      <!-- Status -->
+      <div
+        *ngIf="isEditMode"
+        class="mt-2 flex items-center gap-3"
+      >
+        <label
+          class="relative inline-flex cursor-pointer items-center"
+        >
+          <input
+            type="checkbox"
+            formControlName="active"
+            class="peer sr-only"
+          />
+
+          <div
+            class="h-6 w-11 rounded-full bg-gray-300 transition-all after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#232066] peer-checked:after:translate-x-full peer-checked:after:border-white"
+          ></div>
+        </label>
+
+        <span
+          class="text-sm font-bold text-[#232066]"
+        >
+          {{
+            form.get('active')?.value
+              ? 'Administrador Ativo'
+              : 'Administrador Inativo'
+          }}
+        </span>
+      </div>
+
+      <!-- Informação de primeiro acesso -->
+      <div
+        *ngIf="!isEditMode"
+        class="rounded-lg border border-indigo-200 bg-indigo-50 p-4"
+      >
+        <p class="text-sm text-indigo-800">
+          O administrador será criado em situação de primeiro acesso e deverá
+          definir sua senha antes de entrar no sistema.
+        </p>
+      </div>
+
+      <!-- Ações -->
+      <div
+        class="mt-6 flex gap-4"
+      >
+        <button
+          type="submit"
+          [disabled]="
+            form.invalid ||
+            isSubmitting
+          "
+          class="flex flex-1 items-center justify-center gap-2 rounded bg-[#232066] py-2 font-bold text-white transition-colors hover:bg-[#322A6A] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg
+            *ngIf="isSubmitting"
+            class="h-5 w-5 animate-spin text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            ></path>
+          </svg>
+
+          {{
+            isSubmitting
+              ? 'Salvando...'
+              : isEditMode
+                ? 'Salvar Alterações'
+                : 'Cadastrar'
+          }}
+        </button>
+
+        <button
+          type="button"
+          [disabled]="isSubmitting"
+          class="flex-1 rounded bg-gray-200 py-2 font-bold text-gray-800 transition-colors hover:bg-gray-300 disabled:opacity-50"
+          (click)="closeModal.emit()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

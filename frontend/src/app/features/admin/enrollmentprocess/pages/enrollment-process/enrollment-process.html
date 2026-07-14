@@ -1,139 +1,518 @@
-<div class="py-8 px-4 w-full max-w-[95%] mx-auto relative">
-  <div class="text-center mb-10">
-    <h1 class="text-2xl font-bold text-[#232066]">Gestão de Processos de Matrícula</h1>
+<div
+  class="relative mx-auto w-full max-w-[95%] px-4 py-8"
+>
+  <div class="mb-10 text-center">
+    <h1
+      class="text-2xl font-bold text-[#232066]"
+    >
+      Gestão de Processos de Matrícula
+    </h1>
+
     <div class="separator-line"></div>
   </div>
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg">
-    <div class="flex flex-col md:flex-row items-end justify-between gap-4 mb-6">
-      <div class="w-full md:w-1/2 relative">
-        <label class="block text-sm font-bold text-[#232066] mb-1">Buscar Processo:</label>
+  <div
+    class="rounded-2xl bg-white p-8 shadow-lg"
+  >
+    <!-- Busca e ações -->
+    <div
+      class="mb-6 flex flex-col items-end justify-between gap-4 md:flex-row"
+    >
+      <div
+        class="relative w-full md:w-1/2"
+      >
+        <label
+          class="mb-1 block text-sm font-bold text-[#232066]"
+        >
+          Buscar processo:
+        </label>
+
         <div class="relative">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+          >
+            <svg
+              class="h-5 w-5 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
             </svg>
           </div>
-          <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()"
-            class="w-full p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#232066]"
-            placeholder="Digite o título...">
+
+          <input
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+            class="w-full rounded border border-gray-300 p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-[#232066]"
+            placeholder="Título ou período..."
+          />
         </div>
       </div>
 
-      <div class="flex gap-2 flex-wrap">
-        <button (click)="openCreateModal()"
-          class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded bg-[#232066] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#322A6A]"
+          (click)="openCreateModal()"
+        >
           Cadastrar Processo
         </button>
 
-        <button (click)="openUpdateModal()" [disabled]="!selectedProcess"
-          class="bg-[#232066] hover:bg-[#322A6A] text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-            </path>
-          </svg>
+        <button
+          type="button"
+          [disabled]="
+            !selectedProcess ||
+            !canManageClasses(selectedProcess)
+          "
+          class="flex items-center gap-2 rounded bg-[#232066] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#322A6A] disabled:cursor-not-allowed disabled:opacity-50"
+          (click)="openUpdateModal()"
+        >
           Editar Processo
         </button>
 
-        <button (click)="inactivateProcess()" [disabled]="!selectedProcess"
-          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 disabled:opacity-50 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-          </svg>
+        <button
+          type="button"
+          [disabled]="
+            !selectedProcess ||
+            !canManageClasses(selectedProcess)
+          "
+          class="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+          (click)="inactivateProcess()"
+        >
           Inativar Processo
         </button>
 
-        <button (click)="generatePDF()"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-semibold flex items-center gap-2 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-            </path>
-          </svg>
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+          (click)="generatePDF()"
+        >
           Exportar Tabela
         </button>
       </div>
     </div>
 
-    <div class="overflow-x-auto rounded border border-gray-200">
-      <table class="w-full border-collapse">
+    <!-- Tabela -->
+    <div
+      class="overflow-x-auto rounded border border-gray-200"
+    >
+      <table
+        class="w-full border-collapse"
+      >
         <thead>
-          <tr class="bg-[#232066] text-white">
-            <th class="p-3 text-left">Título</th>
-            <th class="p-3 text-left">Período Letivo</th>
-            <th class="p-3 text-center">Início</th>
-            <th class="p-3 text-center">Fim</th>
-            <th class="p-3 text-center">Status</th>
+          <tr
+            class="bg-[#232066] text-white"
+          >
+            <th class="p-3 text-left">
+              Título
+            </th>
+
+            <th class="p-3 text-left">
+              Período Letivo
+            </th>
+
+            <th class="p-3 text-center">
+              Início
+            </th>
+
+            <th class="p-3 text-center">
+              Fim
+            </th>
+
+            <th class="p-3 text-center">
+              Situação
+            </th>
           </tr>
         </thead>
+
         <tbody>
-          <tr *ngFor="let p of filteredProcesses" (click)="selectProcess(p)"
-            [class.bg-[#232066]]="selectedProcess?.id === p.id" [class.text-white]="selectedProcess?.id === p.id"
-            class="border-b cursor-pointer hover:bg-[#322A6A] hover:text-white transition-colors">
-            <td class="p-3 font-semibold">{{p.title}}</td>
-            <td class="p-3">{{ getPeriodInfo(p.academicPeriodId) }}</td>
-            <td class="p-3 text-center">{{p.startDate | date:'dd/MM/yyyy'}}</td>
-            <td class="p-3 text-center">{{p.endDate | date:'dd/MM/yyyy'}}</td>
+          <tr
+            *ngFor="
+              let process of filteredProcesses
+            "
+            class="cursor-pointer border-b transition-colors hover:bg-[#322A6A] hover:text-white"
+            [class.bg-[#232066]]="
+              selectedProcess?.id === process.id
+            "
+            [class.text-white]="
+              selectedProcess?.id === process.id
+            "
+            (click)="selectProcess(process)"
+          >
+            <td class="p-3 font-semibold">
+              {{ process.title }}
+            </td>
+
+            <td class="p-3">
+              {{
+                getPeriodInfo(
+                  process.academicPeriodId
+                )
+              }}
+            </td>
+
             <td class="p-3 text-center">
-              <span class="text-xs px-2 py-1 rounded font-bold"
-                [ngClass]="selectedProcess?.id === p.id ? 'bg-white text-[#232066]' : (p.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
-                {{p.active ? 'Ativo' : 'Inativo'}}
+              {{
+                process.startDate
+                  | date: 'dd/MM/yyyy HH:mm'
+              }}
+            </td>
+
+            <td class="p-3 text-center">
+              {{
+                process.endDate
+                  | date: 'dd/MM/yyyy HH:mm'
+              }}
+            </td>
+
+            <td class="p-3 text-center">
+              <span
+                class="rounded px-2 py-1 text-xs font-bold"
+                [ngClass]="
+                  selectedProcess?.id ===
+                  process.id
+                    ? 'bg-white text-[#232066]'
+                    : getStatusClasses(process)
+                "
+              >
+                {{ getStatusLabel(process) }}
               </span>
             </td>
           </tr>
-          <tr *ngIf="filteredProcesses.length === 0">
-            <td colspan="5" class="p-6 text-center text-gray-500">Nenhum processo encontrado.</td>
+
+          <tr
+            *ngIf="
+              filteredProcesses.length === 0
+            "
+          >
+            <td
+              colspan="5"
+              class="p-6 text-center text-gray-500"
+            >
+              Nenhum processo encontrado.
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div *ngIf="selectedProcess" class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-2xl animate-fade-in">
-      <h3 class="text-lg font-bold text-[#232066] mb-4">Turmas vinculadas a: {{ selectedProcess.title }}</h3>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Turmas do processo selecionado -->
+    <section
+      *ngIf="selectedProcess"
+      class="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-6"
+    >
+      <div
+        class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
         <div>
-          <div class="flex justify-between items-center mb-2">
-            <h4 class="text-sm font-semibold text-gray-600">Turmas já vinculadas:</h4>
-            <button (click)="generateLinkedClassesPDF()" 
-                    [disabled]="linkedClasses.length === 0"
-                    class="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded transition-colors disabled:opacity-50">
-              Baixar PDF
-            </button>
+          <div
+            class="flex flex-wrap items-center gap-3"
+          >
+            <h3
+              class="text-lg font-bold text-[#232066]"
+            >
+              Turmas do processo
+            </h3>
+
+            <span
+              class="rounded-full px-3 py-1 text-xs font-semibold"
+              [ngClass]="
+                getStatusClasses(
+                  selectedProcess
+                )
+              "
+            >
+              {{
+                getStatusLabel(
+                  selectedProcess
+                )
+              }}
+            </span>
           </div>
-          
-          <ul class="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100 shadow-sm">
-            <li *ngFor="let link of linkedClasses" class="p-3 flex items-center gap-2">
-              <span class="font-medium text-gray-800">{{ getClassGroupName(link.classGroupId) }}</span>
-            </li>
-            <li *ngIf="linkedClasses.length === 0" class="p-4 text-center text-gray-400 italic text-sm">Nenhuma turma vinculada.</li>
-          </ul>
+
+          <p
+            class="mt-1 text-sm text-gray-600"
+          >
+            {{ selectedProcess.title }}
+          </p>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="font-bold text-[#232066]">Vincular nova turma:</label>
-          <select [(ngModel)]="selectedClassGroupId" class="p-2 border rounded focus:ring-2 focus:ring-[#232066] outline-none">
-            <option value="" disabled selected>
-              {{ availableClasses.length > 0 ? 'Selecione uma turma...' : 'Nenhuma turma disponível' }}
-            </option>
-            <option *ngFor="let c of availableClasses" [value]="c.id">
-              {{ c.name }} ({{ c.code }})
-            </option>
-          </select>
-          <button (click)="linkClassToProcess()" [disabled]="!selectedClassGroupId"
-            class="bg-[#232066] text-white py-2 rounded font-bold hover:bg-[#322A6A] disabled:opacity-50 transition-colors">
-            Adicionar Vínculo
+        <div
+          class="flex flex-wrap gap-2"
+        >
+          <button
+            *ngIf="
+              !isEditingClasses &&
+              canManageClasses(
+                selectedProcess
+              )
+            "
+            type="button"
+            class="rounded bg-[#232066] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#322A6A]"
+            (click)="startEditingClasses()"
+          >
+            Editar turmas
+          </button>
+
+          <button
+            type="button"
+            [disabled]="
+              linkedClasses.length === 0
+            "
+            class="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-50"
+            (click)="generateLinkedClassesPDF()"
+          >
+            Baixar PDF
           </button>
         </div>
       </div>
-    </div>
+
+      <div
+        *ngIf="
+          !canManageClasses(
+            selectedProcess
+          )
+        "
+        class="mb-5 rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-800"
+      >
+        As turmas só podem ser alteradas
+        enquanto o processo ainda não tiver
+        iniciado.
+      </div>
+
+      <div
+        *ngIf="linkSuccessMessage"
+        class="mb-5 rounded-lg border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-700"
+      >
+        {{ linkSuccessMessage }}
+      </div>
+
+      <div
+        *ngIf="linkErrorMessage"
+        class="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700"
+      >
+        {{ linkErrorMessage }}
+      </div>
+
+      <div
+        *ngIf="isLoadingLinks"
+        class="flex min-h-32 items-center justify-center"
+      >
+        <div
+          class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#232066]"
+        ></div>
+      </div>
+
+      <!-- Visualização -->
+      <ng-container
+        *ngIf="
+          !isLoadingLinks &&
+          !isEditingClasses
+        "
+      >
+        <div
+          *ngIf="
+            linkedClasses.length > 0;
+            else noLinkedClasses
+          "
+          class="grid gap-3 md:grid-cols-2 xl:grid-cols-3"
+        >
+          <div
+            *ngFor="
+              let link of linkedClasses
+            "
+            class="rounded-lg border border-gray-200 bg-white p-4"
+          >
+            <p
+              class="font-medium text-gray-800"
+            >
+              {{
+                getClassGroupName(
+                  link.classGroupId
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <ng-template #noLinkedClasses>
+          <div
+            class="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500"
+          >
+            Nenhuma turma vinculada.
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- Edição -->
+      <ng-container
+        *ngIf="isEditingClasses"
+      >
+        <div
+          class="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 p-5"
+        >
+          <label
+            class="font-bold text-[#232066]"
+          >
+            Adicionar turma:
+          </label>
+
+          <div
+            class="mt-3 flex flex-col gap-3 sm:flex-row"
+          >
+            <select
+              [(ngModel)]="
+                selectedClassGroupId
+              "
+              class="flex-1 rounded border border-gray-300 bg-white p-2 outline-none focus:ring-2 focus:ring-[#232066]"
+            >
+              <option
+                value=""
+                disabled
+              >
+                {{
+                  availableClasses.length > 0
+                    ? 'Selecione uma turma...'
+                    : 'Nenhuma turma disponível'
+                }}
+              </option>
+
+              <option
+                *ngFor="
+                  let classGroup of availableClasses
+                "
+                [value]="classGroup.id"
+              >
+                {{ classGroup.code }} —
+                {{ classGroup.name }}
+              </option>
+            </select>
+
+            <button
+              type="button"
+              [disabled]="
+                !selectedClassGroupId
+              "
+              class="rounded bg-[#232066] px-5 py-2 font-bold text-white transition hover:bg-[#322A6A] disabled:opacity-50"
+              (click)="addClassToSelection()"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+        <h4
+          class="mb-3 font-semibold text-gray-700"
+        >
+          Turmas selecionadas
+        </h4>
+
+        <div
+          *ngIf="
+            getEditableClassGroups()
+              .length > 0
+          "
+          class="grid gap-3 md:grid-cols-2 xl:grid-cols-3"
+        >
+          <div
+            *ngFor="
+              let classGroup of getEditableClassGroups()
+            "
+            class="flex items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-4"
+          >
+            <div>
+              <p
+                class="text-xs font-bold uppercase text-[#232066]"
+              >
+                {{ classGroup.code }}
+              </p>
+
+              <p
+                class="mt-1 font-medium text-gray-800"
+              >
+                {{ classGroup.name }}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              title="Remover turma"
+              class="flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
+              [disabled]="isSavingClasses"
+              (click)="
+                removeClassFromSelection(
+                  classGroup.id
+                )
+              "
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3M4 7h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            getEditableClassGroups()
+              .length === 0
+          "
+          class="rounded-lg border border-dashed border-yellow-300 bg-yellow-50 p-6 text-center text-sm text-yellow-700"
+        >
+          Nenhuma turma selecionada para este
+          processo.
+        </div>
+
+        <div
+          class="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-5"
+        >
+          <button
+            type="button"
+            [disabled]="isSavingClasses"
+            class="rounded border border-gray-300 bg-white px-5 py-2 font-semibold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+            (click)="cancelEditingClasses()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            [disabled]="isSavingClasses"
+            class="rounded bg-[#232066] px-5 py-2 font-semibold text-white hover:bg-[#322A6A] disabled:opacity-50"
+            (click)="saveClassChanges()"
+          >
+            {{
+              isSavingClasses
+                ? 'Salvando...'
+                : 'Salvar alterações'
+            }}
+          </button>
+        </div>
+      </ng-container>
+    </section>
   </div>
 </div>
 
-<app-enrollment-process-modal *ngIf="isModalOpen" [processToEdit]="selectedProcess" (closeModal)="isModalOpen = false" (saveSuccess)="onModalSuccess()"></app-enrollment-process-modal>
+<app-enrollment-process-modal
+  *ngIf="isModalOpen"
+  [processToEdit]="selectedProcess"
+  (closeModal)="isModalOpen = false"
+  (saveSuccess)="onModalSuccess()"
+>
+</app-enrollment-process-modal>

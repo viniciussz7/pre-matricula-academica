@@ -20,6 +20,18 @@ import br.edu.uesb.prematricula.enrollmentprocessclasses.model.entity.Enrollment
 import br.edu.uesb.prematricula.enrollmentprocessclasses.repository.EnrollmentProcessClassRepository;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Serviço responsável pelo gerenciamento de turmas em processos de matrícula
+ * no sistema de Pré-Matrícula Acadêmica.
+ *
+ * <p>
+ * Centraliza as regras de negócio relacionadas à adição de turmas aos
+ * processos de matrícula, validando compatibilidade entre turmas e períodos
+ * acadêmicos, além de gerenciar desativações e consultas de turmas disponíveis.
+ * </p>
+ *
+ * @author Equipe de Desenvolvimento
+ */
 @Service
 @RequiredArgsConstructor
 public class EnrollmentProcessClassService {
@@ -30,6 +42,23 @@ public class EnrollmentProcessClassService {
 
         private final ClassGroupService classGroupService;
 
+        /**
+         * Adiciona uma turma a um processo de matrícula.
+         *
+         * <p>
+         * Realiza validações: processo deve estar ativo e não iniciado,
+         * turma deve estar ativa e pertencer ao mesmo período acadêmico do processo.
+         * Se a associação já existe e está inativa, reativa-a.
+         * </p>
+         *
+         * @param dto dados contendo ID do processo e ID da turma
+         * @return turma do processo criada ou reativada
+         * 
+         * @throws EnrollmentProcessClassAlreadyExistsException
+         *                                                      quando a turma já
+         *                                                      estiver ativa neste
+         *                                                      processo
+         */
         @Transactional
         public EnrollmentProcessClassResponseDTO create(
                         CreateEnrollmentProcessClassRequestDTO dto) {
@@ -37,22 +66,43 @@ public class EnrollmentProcessClassService {
                 EnrollmentProcess process = enrollmentProcessService.getEnrollmentProcess(
                                 dto.enrollmentProcessId());
 
-                ClassGroup classGroup = classGroupService.getClassGroup(dto.classGroupId());
+                ClassGroup classGroup = classGroupService.getClassGroup(
+                                dto.classGroupId());
 
                 validateProcess(process);
+                validateClassGroupPeriod(process, classGroup);
 
-                validateClassGroup(process, classGroup);
+                EnrollmentProcessClass entity = repository
+                                .findByEnrollmentProcessAndClassGroup(
+                                                process,
+                                                classGroup)
+                                .map(existing -> {
 
-                EnrollmentProcessClass entity = EnrollmentProcessClass.builder()
-                                .enrollmentProcess(process)
-                                .classGroup(classGroup)
-                                .build();
+                                        if (existing.isActive()) {
+                                                throw new EnrollmentProcessClassAlreadyExistsException(
+                                                                "Class group already belongs to this enrollment process.");
+                                        }
+
+                                        existing.setActive(true);
+
+                                        return existing;
+                                })
+                                .orElseGet(() -> EnrollmentProcessClass.builder()
+                                                .enrollmentProcess(process)
+                                                .classGroup(classGroup)
+                                                .build());
 
                 EnrollmentProcessClass saved = repository.save(entity);
 
                 return toResponse(saved);
         }
 
+        /**
+         * Lista todas as turmas ativas de um processo de matrícula.
+         *
+         * @param processId identificador do processo de matrícula
+         * @return lista de turmas ativas no processo
+         */
         public List<EnrollmentProcessClassResponseDTO> findByProcess(
                         UUID processId) {
 
@@ -65,6 +115,18 @@ public class EnrollmentProcessClassService {
                                 .toList();
         }
 
+        /**
+         * Desativa uma turma de um processo de matrícula.
+         *
+         * <p>
+         * A operação realiza exclusão lógica, preservando o histórico
+         * de dados do sistema.
+         * </p>
+         *
+         * @param id identificador da turma do processo a ser desativada
+         *
+         * 
+         */
         @Transactional
         public void deactivate(UUID id) {
 
@@ -77,6 +139,12 @@ public class EnrollmentProcessClassService {
                 repository.save(entity);
         }
 
+        /**
+         * Lista todas as turmas ativas do processo de matrícula aberto.
+         *
+         * @return lista de turmas ativas no processo aberto
+         * 
+         */
         public List<EnrollmentProcessClassResponseDTO> findOpenProcessClasses() {
 
                 EnrollmentProcess process = enrollmentProcessService.getOpenProcess();
@@ -87,6 +155,15 @@ public class EnrollmentProcessClassService {
                                 .toList();
         }
 
+        /**
+         * Busca uma turma do processo pelo identificador, retornando a entidade.
+         *
+         * @param id identificador da turma do processo
+         * @return entidade de turma do processo encontrada
+         * @throws EnrollmentProcessClassNotFoundException
+         *                                                 quando o identificador não
+         *                                                 existir
+         */
         public EnrollmentProcessClass get(UUID id) {
 
                 return repository.findById(id)
@@ -94,6 +171,20 @@ public class EnrollmentProcessClassService {
                                                 "Enrollment process class not found."));
         }
 
+        /**
+         * Busca múltiplas turmas do processo pelos identificadores.
+         *
+         * <p>
+         * Valida que todos os IDs fornecidos foram encontrados,
+         * lançando exceção se algum ID não existir.
+         * </p>
+         *
+         * @param ids lista de identificadores de turmas do processo
+         * @return lista de entidades encontradas na mesma ordem fornecida
+         * @throws EnrollmentProcessClassNotFoundException
+         *                                                 quando algum identificador
+         *                                                 não existir
+         */
         public List<EnrollmentProcessClass> findAllByIds(List<UUID> ids) {
 
                 List<EnrollmentProcessClass> classes = repository.findAllById(ids);
@@ -104,6 +195,24 @@ public class EnrollmentProcessClassService {
                 }
 
                 return classes;
+        }
+
+        private void validateClassGroupPeriod(
+                        EnrollmentProcess process,
+                        ClassGroup classGroup) {
+
+                if (!classGroup.isActive()) {
+                        throw new InvalidEnrollmentProcessException(
+                                        "Class group is inactive.");
+                }
+
+                if (!process.getAcademicPeriod()
+                                .getId()
+                                .equals(classGroup.getAcademicPeriod().getId())) {
+
+                        throw new InvalidEnrollmentProcessException(
+                                        "Class group belongs to another academic period.");
+                }
         }
 
         private void validateProcess(

@@ -1,5 +1,5 @@
 export interface ClassGroup {
-    id?: string;
+    id: string;
     code: string;
     name: string;
     disciplineId: string;
